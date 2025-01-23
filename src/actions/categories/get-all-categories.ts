@@ -47,4 +47,34 @@ export const getAllCategories = async (userId: number, searchQuery: string) => {
             message: 'Error al obtener las categorías'
         }
     }
+};
+
+export const getCategoriesProductAdd = async(userId:number) => {
+    try {
+        
+        const categories = await prisma.category.findMany({
+            where : {
+                usuarioId : userId
+            },
+            orderBy : {
+                 nombre:'asc'
+            },
+            select : {
+                id:true,
+                nombre:true
+            }
+        });
+
+        return {
+            ok:true,
+            message:'Categorías encontradas',
+            categories
+        }
+    } catch (error) {
+        console.error(error);
+        return {
+            ok:false,
+            message:'Error al obtener categorías'
+        }
+    }
 }

@@ -21,7 +21,7 @@ type InputsClient = {
 }
 export const FormEditClient = ({ userId,client }: Props) => {
 
-    const { register, handleSubmit, reset, formState: { isValid, isSubmitting }, control } = useForm<InputsClient>({
+    const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsClient>({
         defaultValues : {
             nombre:client.nombre,
             ciudad:client.ciudad,

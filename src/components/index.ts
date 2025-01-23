@@ -19,3 +19,14 @@ export { Card } from './dashboard/Card';
 export { SalesChart } from './dashboard/SalesChart';
 export { WinningsChart } from './dashboard/WinningsChart';
 export { LatestSalesTable } from './dashboard/LatestSalesTable';
+/** Productos */
+export { FormAddProduct } from './productos/FormAddProduct';
+export { TableProducts } from './productos/TableProducts';
+export { SkeletonTableProducts } from './productos/SkeletonTableProducts';
+export { FormEditProduct } from './productos/FormEditProduct';
+export { ButtonDeleteProduct } from './productos/ButtonDeleteProduct';
+/** Pedidos */
+export { FormAddPedido } from './pedidos/FormAddPedido';
+export { PedidosPageComponent } from './pedidos/PedidosPageComponent';
+export { PedidoCard } from './pedidos/PedidoCard';
+export { PedidosColumn } from './pedidos/PedidosColumn';

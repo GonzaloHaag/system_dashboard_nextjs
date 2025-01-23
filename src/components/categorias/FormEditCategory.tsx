@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { addCategory, editCategoryWithId } from "@/actions";
+import { editCategoryWithId } from "@/actions";
 import { toast } from "sonner";
 import { Categoria } from "@/interfaces";
 

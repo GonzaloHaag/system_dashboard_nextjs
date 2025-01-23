@@ -2,7 +2,7 @@ import { getAllClients } from "@/actions"
 import { toast } from "sonner";
 import { ButtonDeleteClient } from "./ButtonDeleteClient";
 import { ButtonEdit } from "../ButtonEdit";
-
+import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
 interface Props {
     userId: number;
     searchQuery: string;
@@ -42,7 +42,7 @@ export const TableClients = async ({ userId, searchQuery }: Props) => {
                             clients.map((client) => (
                                 <tr key={client.id} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                        {client.nombre}
+                                        {capitalizeFirstLetter(client.nombre)}
                                     </th>
                                     <td className="px-6 py-4">
                                         {client.ciudad === 'Santo Tome' ? 'Santo Tomé' : client.ciudad}

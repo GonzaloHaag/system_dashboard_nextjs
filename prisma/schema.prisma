@@ -37,6 +37,10 @@ model Usuario {
   clientes      Cliente[]
   // Un usuario va a tener varias categorias 
   categorias    Category[]
+  // Un usuario va a tener muchos productos
+  productos     Product[]
+  // Un usuario va a tener muchos pedidos 
+  pedidos       Pedido[]
 }
 
 model Cliente {
@@ -48,15 +52,60 @@ model Cliente {
   createdAt DateTime      @default(now())
   Usuario   Usuario?      @relation(fields: [usuarioId], references: [id])
   usuarioId Int?
+  // Un cliente puede tener muchos pedidos 
+  pedidos   Pedido[]
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   nombre    String
-  imagen String?
-  createdAt DateTime @default(now())
-  Usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  imagen    String?
+  createdAt DateTime  @default(now())
+  Usuario   Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId Int
+  // Una categoria puede pertenecer a muchos productos 
+  productos Product[]
+}
+
+model Product {
+  id          Int                 @id @default(autoincrement())
+  titulo      String
+  precio      Float               @default(0.00)
+  stock       Int                 @default(0)
+  imagen      String?
+  color       String
+  description String
+  Usuario     Usuario             @relation(fields: [usuarioId], references: [id])
+  usuarioId   Int
+  Category    Category            @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  // Un producto puede pertenecer a varios pedidos 
+  pedidos     ProductosEnPedido[]
+}
+
+model Pedido {
+  id            Int                 @id @default(autoincrement())
+  Cliente       Cliente             @relation(fields: [clienteId], references: [id])
+  clienteId     Int
+  Usuario       Usuario             @relation(fields: [usuarioId], references: [id])
+  usuarioId     Int
+  productos     ProductosEnPedido[]
+  createdAt     DateTime            @default(now())
+  fechaEntrega  DateTime
+  status        StatusPedido        @default(pending)
+  totalPrice    Float
+  totalProducts Int
+}
+
+// Tabla intermedia entre productos y pedidos
+model ProductosEnPedido {
+  id        Int     @id @default(autoincrement())
+  pedido    Pedido  @relation(fields: [pedidoId], references: [id])
+  pedidoId  Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  cantidad  Int @default(1)
+  @@unique([pedidoId,productId]) //evitar duplicados del mismo producto
 }
 
 enum Role {
@@ -67,4 +116,10 @@ enum Role {
 enum StatusCliente {
   Activo
   Inactivo
+}
+
+enum StatusPedido {
+  pending
+  inProgress
+  completed
 }

@@ -6,7 +6,16 @@ export { editClientWithId } from './clients/edit-client';
 export { findClientWithId } from './clients/find-client';
 
 export { addCategory } from './categories/add-category';
-export { getAllCategories } from './categories/get-all-categories';
+export { getAllCategories,getCategoriesProductAdd } from './categories/get-all-categories';
 export { editCategoryWithId } from './categories/edit-category';
 export { deleteCategoryWithId } from './categories/delete-category';
 export { findCategoryWithId } from './categories/find-category';
+
+export { addProduct } from './productos/add-product';
+export { getAllProducts } from './productos/get-all-products';
+export { editProductWithId } from './productos/edit-product';
+export { findProductWithId } from './productos/find-product';
+export { deleteProductWithId } from './productos/delete-product';
+
+export { getPedidosByStatus } from './pedidos/get-pedidos-by-status';
+export { getFieldsPedidos } from './pedidos/get-fields-pedidos';

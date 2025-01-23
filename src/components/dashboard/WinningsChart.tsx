@@ -1,5 +1,5 @@
 'use client';
-import { Area, Bar, BarChart, CartesianGrid, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 
 const data = [
@@ -39,11 +39,11 @@ export const WinningsChart = () => {
         <div className="w-full h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart width={150} height={40} data={data}>
-                    <Bar dataKey="Total" fill="#1d4ed8" activeBar={<Rectangle fill="black" stroke="black" />} />
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <Bar dataKey="Total" barSize={40} />
+                    {/* <CartesianGrid strokeDasharray="1 1" /> */}
                     <XAxis dataKey='name' />
                     <YAxis />
-                    <Tooltip formatter={(value) => [`$${value}`,'Total']} />
+                    <Tooltip formatter={(value) => [`$${value}`,'Total']} cursor={false} />
                 </BarChart>
             </ResponsiveContainer>
         </div>
