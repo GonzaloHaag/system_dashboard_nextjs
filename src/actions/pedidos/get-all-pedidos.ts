@@ -1,21 +1,18 @@
 'use server';
-
-import prisma from "@/lib/prisma";
-
-export const getPedidosByStatus = async (userId: number, status: 'pending' | 'inProgress' | 'completed') => {
-
+import prisma from '@/lib/prisma';
+export const getAllPedidos = async (userId: number) => {
     try {
-
         const pedidos = await prisma.pedido.findMany({
             where: {
-                usuarioId: userId,
-                status: status
+                usuarioId: userId
             },
             include: {
                 Cliente: {
                     select: {
                         id: true,
-                        nombre: true
+                        nombre: true,
+                        direccion:true,
+                        ciudad:true
                     }
                 },
                 productos: {
@@ -25,17 +22,21 @@ export const getPedidosByStatus = async (userId: number, status: 'pending' | 'in
                         product: {
                             select: {
                                 id: true,
-                                titulo: true
+                                titulo: true,
+                                precio: true
                             }
                         }
-                    }
+                    },
                 }
             },
+            orderBy : {
+                id:'asc'
+            }
         });
 
         return {
             ok: true,
-            message: 'Éxito al encontrar pedidos',
+            message: 'Pedidos encontrados',
             pedidos
         }
 
@@ -43,8 +44,7 @@ export const getPedidosByStatus = async (userId: number, status: 'pending' | 'in
         console.error(error);
         return {
             ok: false,
-            message: 'Error al obtener los pedidos'
+            message: 'Error al buscar pedidos'
         }
     }
-
 }

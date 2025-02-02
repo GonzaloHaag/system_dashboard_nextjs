@@ -21,6 +21,9 @@ export const getAllProducts = async (userId: number, searchQuery: string) => {
                         nombre: true
                     }
                 }
+            },
+            orderBy : {
+                titulo:'asc'
             }
         }) : await prisma.product.findMany({
             where: {
@@ -55,6 +58,9 @@ export const getAllProducts = async (userId: number, searchQuery: string) => {
                         nombre: true
                     }
                 }
+            },
+            orderBy : {
+                titulo:'asc'
             }
 
         });

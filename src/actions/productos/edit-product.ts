@@ -6,6 +6,17 @@ import { revalidatePath } from "next/cache";
 export const editProductWithId = async(userId:number,productId:number,titulo:string,precio:number,stock:number,imagen:string | null,color:string,description:string,categoryId:number) => {
     try {
 
+        const product = await prisma.product.findUnique({
+            where : {
+                id:productId
+            }
+        });
+        if(!product) {
+            return {
+                ok:false,
+                message:'El producto no existe'
+            }
+        }
         await prisma.product.update({
             where : {
                 id : productId

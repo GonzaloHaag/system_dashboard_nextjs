@@ -18,7 +18,8 @@ export { ButtonDeleteCategory } from './categorias/ButtonDeleteCategory';
 export { Card } from './dashboard/Card';
 export { SalesChart } from './dashboard/SalesChart';
 export { WinningsChart } from './dashboard/WinningsChart';
-export { LatestSalesTable } from './dashboard/LatestSalesTable';
+export { TableOrders } from './dashboard/TableOrders';
+export { SkeletonTableOrders } from './dashboard/SkeletonTableOrders';
 /** Productos */
 export { FormAddProduct } from './productos/FormAddProduct';
 export { TableProducts } from './productos/TableProducts';
@@ -27,6 +28,7 @@ export { FormEditProduct } from './productos/FormEditProduct';
 export { ButtonDeleteProduct } from './productos/ButtonDeleteProduct';
 /** Pedidos */
 export { FormAddPedido } from './pedidos/FormAddPedido';
-export { PedidosPageComponent } from './pedidos/PedidosPageComponent';
-export { PedidoCard } from './pedidos/PedidoCard';
-export { PedidosColumn } from './pedidos/PedidosColumn';
+export { PedidosPageContainer } from './pedidos/PedidosPageContainer';
+export { SkeletonPedidosPageContainer } from './pedidos/SkeletonPedidosPageContainer';
+export { ButtonDeletePedido } from './pedidos/ButtonDeletePedido';
+export { ButtonViewDetailsPedido } from './pedidos/ButtonViewDetailsPedido';

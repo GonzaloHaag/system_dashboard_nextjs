@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import Select from 'react-select';
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { addProduct, editProductWithId } from "@/actions";
+import { editProductWithId } from "@/actions";
 import { toast } from "sonner";
 import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
 import { Textarea } from "../ui/textarea";

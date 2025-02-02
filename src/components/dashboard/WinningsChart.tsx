@@ -1,5 +1,5 @@
 'use client';
-import { Bar, BarChart, CartesianGrid, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart,ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 
 const data = [

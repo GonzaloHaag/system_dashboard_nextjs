@@ -1,6 +1,15 @@
-import { Card, LatestSalesTable, SalesChart, WinningsChart } from "@/components";
+import { auth } from "@/auth.config";
+import { Card, SalesChart, SkeletonTableOrders, TableOrders, WinningsChart } from "@/components";
 import { BadgeDollarSignIcon, BoxIcon, ShoppingBagIcon, UsersIcon } from "lucide-react";
-export default function DashboardPage() {
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+export default async function DashboardPage() {
+
+  const session = await auth();
+  if (!session?.user) {
+    redirect('/login');
+  }
+  const userId = parseInt(session.user.id);
   return (
     <section className="w-full flex flex-col gap-y-10">
       <div className="grid grid-cols-4 gap-6">
@@ -19,8 +28,11 @@ export default function DashboardPage() {
           <WinningsChart />
         </div>
       </div>
-      <div className="flex flex-col gap-y-2">
-        <LatestSalesTable />
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold text-neutral-900 mb-4">Órdenes recientes</h2>
+        <Suspense fallback={<SkeletonTableOrders />}>
+          <TableOrders userId={userId} />
+        </Suspense>
       </div>
     </section>
   );

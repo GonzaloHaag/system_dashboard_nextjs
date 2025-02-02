@@ -2,14 +2,16 @@
 
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from 'react-select';
-import { SelectContent, SelectGroup, SelectItem, SelectLabel, Select as SelectShadcn, SelectTrigger, SelectValue } from "../ui/select";
+import { SelectContent, SelectGroup, SelectItem, Select as SelectShadcn, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { addClient } from "@/actions";
+import { addPedido } from "@/actions";
 import { toast } from "sonner";
 import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
 import { useState } from "react";
+import { Trash2Icon } from "lucide-react";
+import { Textarea } from "../ui/textarea";
 
 interface Props {
     userId: number;
@@ -20,46 +22,106 @@ interface Props {
     productos: {
         id: number;
         titulo: string;
+        stock: number;
     }[];
 }
+
 type InputsPedido = {
     clienteType: { label: string, value: number }
-    productosType: { label: string, value: number }
-    fechaEntrega: Date;
+    fechaEntrega: string;
     estado: 'pending' | 'inProgress' | 'completed';
     productos: number[];
+    nota: string;
+    metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia';
 }
-export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
 
+export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
+    const router = useRouter();
     const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsPedido>({
         defaultValues: {
-            estado: 'pending'
+            estado: 'pending',
+            nota: '',
+            metodoPago: 'MercadoPago'
         }
     });
-    const [orderItems, setOrderItems] = useState<({ productId: number, quantity: number })[]>([]);
+
+    const [orderItems, setOrderItems] = useState<{ productId: number, quantity: number }[]>([]);
 
     const buttonAddProduct = () => {
+        if (orderItems.length === productos.length) {
+            toast.error('No hay suficientes productos para agregar');
+            return;
+        }
         setOrderItems([...orderItems, { productId: 0, quantity: 1 }]);
     }
 
-    const buttonRemoveProduct = (index: number) => {
-        setOrderItems(orderItems.filter((_, i) => i !== index));
+    const removeProduct = (index: number) => {
+        const newOrdersItems = orderItems.filter((_, i) => i !== index);
+        setOrderItems(newOrdersItems);
     }
 
-    const router = useRouter();
+    const updateOrderItem = (index: number, productId: number, productQuantity: number) => {
+        // Verificar si el producto está seleccionado
+        if (productId === 0) {
+            toast.error('Debes elegir un producto');
+            return;
+        }
+
+        // Encontrar el producto en la lista de productos
+        const productFind = productos.find((producto) => producto.id === productId);
+        if (!productFind) {
+            toast.error('Producto no encontrado');
+            return;
+        }
+
+        // Verificar si hay suficiente stock
+        if (productFind.stock < productQuantity) {
+            toast.warning('No hay suficiente stock');
+            return;
+        }
+
+        // Actualizar el estado de los productos en el pedido
+        const oldOrdersItems = [...orderItems];
+        oldOrdersItems[index] = { productId: productId, quantity: productQuantity };
+        setOrderItems(oldOrdersItems);
+    };
+
     const formAddPedidoSubmit: SubmitHandler<InputsPedido> = async (data) => {
-        // const respuesta = await addClient(userId,data.nombre,data.ciudad,data.direccion,data.status);
-        // if(!respuesta.ok) {
-        //     toast.error(respuesta.message);
-        //     return;
-        // }
-        // if(isValid) {
-        //     toast.success(respuesta.message);
-        //     router.back();
-        // }
+        if (orderItems.length === 0) {
+            toast.error('Debes agregar al menos un producto');
+            return;
+        }
 
-        console.log(data);
+        // Verificar stock antes de guardar
+        const stockErrors = orderItems.some(orderItem => {
+            const product = productos.find(p => p.id === orderItem.productId);
+            return product && product.stock < orderItem.quantity;
+        });
 
+        if (stockErrors) {
+            toast.error('No hay suficiente stock para uno o más productos');
+            return;
+        }
+
+        const respuesta = await addPedido({
+            userId: userId,
+            clienteId: data.clienteType.value,
+            ordersItems: orderItems,
+            estado: data.estado,
+            fechaEntrega: data.fechaEntrega,
+            nota: data.nota,
+            metodoPago: data.metodoPago
+        });
+
+        if (!respuesta.ok) {
+            toast.error(respuesta.message);
+            return;
+        }
+
+        if (isValid) {
+            toast.success('Pedido creado correctamente');
+            router.back();
+        }
     }
 
     const clientsOptions = clientes.map((cliente) => ({
@@ -67,10 +129,12 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
         value: cliente.id
     }));
 
-    const productsOptions = productos.map((producto) => ({
-        label: capitalizeFirstLetter(producto.titulo),
-        value: producto.id
-    }));
+    const availableProductsOptions = productos
+        .filter((producto) => !orderItems.some((orderItem) => orderItem.productId === producto.id))
+        .map((producto) => ({
+            label: capitalizeFirstLetter(producto.titulo),
+            value: producto.id
+        }));
 
     return (
         <form onSubmit={handleSubmit(formAddPedidoSubmit)} className="form_class_global">
@@ -96,32 +160,29 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
             <div className="flex flex-col items-start gap-y-2">
                 <label>Productos*</label>
                 {
-                    orderItems.length > 0 && (
-                        orderItems.map((orderItem, index) => (
-                            <div key={index} className="grid grid-cols-6 gap-x-4">
-                                <Controller
-                                    name="productosType"
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field }) => (
-                                        <Select
-                                            id={`productos-${index}`}
-                                            required
-                                            className="w-full focus:outline-neutral-900 col-span-3"
-                                            placeholder='Seleccionar productos'
-                                            noOptionsMessage={() => 'No se encontraron resultados'}
-                                            {...field}
-                                            options={productsOptions}
-                                        />
-                                    )}
-                                />
-                                <Input type="number" placeholder="Cantidad" defaultValue={1} className="col-span-1" min={1} />
-                                <Button type="button" title="Eliminar" variant={"destructive"} className="col-span-2" onClick={() => buttonRemoveProduct(index)}>
-                                    Eliminar
-                                </Button>
-                            </div>
-                        ))
-                    )
+                    orderItems.length > 0 && orderItems.map((orderItem, index) => (
+                        <div key={index} className="grid grid-cols-9 items-center gap-x-6">
+                            <Select
+                                id={`producto-${index}`}
+                                required
+                                className="w-full col-span-6 focus:outline-neutral-900"
+                                placeholder='Seleccionar producto'
+                                value={availableProductsOptions.find((product) => product.value === orderItem.productId)}
+                                onChange={(selectedOption) => updateOrderItem(index, selectedOption?.value || 0, orderItem.quantity)}
+                                noOptionsMessage={() => 'No se encontraron resultados'}
+                                options={availableProductsOptions}
+                            />
+                            <Input type="number"
+                                placeholder="Cantidad"
+                                required
+                                value={orderItem.quantity}
+                                onChange={(e) => updateOrderItem(index, orderItem.productId, Number.parseInt(e.target.value) || 1)}
+                                className="w-full col-span-2" min={1} />
+                            <Button type="button" variant={'destructive'} title="Eliminar producto" className="col-span-1" onClick={() => removeProduct(index)}>
+                                <Trash2Icon />
+                            </Button>
+                        </div>
+                    ))
                 }
                 <Button variant={'default'} type="button" title="Agregar producto" onClick={buttonAddProduct}>
                     Agregar producto
@@ -135,7 +196,7 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                         control={control}
                         defaultValue="pending"
                         render={({ field }) => (
-                            <SelectShadcn defaultValue={field.value}>
+                            <SelectShadcn value={field.value} onValueChange={field.onChange}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Seleccionar estado" />
                                 </SelectTrigger>
@@ -154,6 +215,34 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                     <label htmlFor="fecha_entrega">Fecha de entrega *</label>
                     <Input type="date" id="fecha_entrega" required {...register('fechaEntrega', { required: true })} />
                 </div>
+            </div>
+            <div className="flex flex-col items-start gap-y-2">
+                <label htmlFor="metodoPago">Método de pago*</label>
+                <Controller
+                    name="metodoPago"
+                    control={control}
+                    defaultValue="MercadoPago"
+                    render={({ field }) => (
+                        <SelectShadcn value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Seleccionar método de pago" />
+                            </SelectTrigger>
+                            <SelectContent id="metodoPago">
+                                <SelectGroup>
+                                    <SelectItem value={'MercadoPago'}>Mercado Pago</SelectItem>
+                                    <SelectItem value={'Transferencia'}>Transferencia</SelectItem>
+                                    <SelectItem value={'Efectivo'}>Efectivo</SelectItem>
+                                    <SelectItem value={'TarjetaCredito'}>Crédito</SelectItem>
+                                    <SelectItem value={'TarjetaDebito'}>Débito</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </SelectShadcn>
+                    )}
+                />
+            </div>
+            <div className="flex flex-col items-start gap-y-2">
+                <label htmlFor="nota">Nota</label>
+                <Textarea {...register('nota', { required: false })} placeholder="Agregá una nota para el pedido" />
             </div>
 
             <div className="flex items-center gap-x-4 justify-end">

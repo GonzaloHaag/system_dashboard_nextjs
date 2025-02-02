@@ -12,7 +12,7 @@ export const getFieldsPedidos = async(userId:number) => {
             },
             select : {
                 id:true,
-                nombre:true
+                nombre:true,
             },
             orderBy : {
                 nombre : 'asc'
@@ -24,7 +24,8 @@ export const getFieldsPedidos = async(userId:number) => {
             },
             select : {
                 id:true,
-                titulo:true
+                titulo:true,
+                stock:true
             },
             orderBy : {
                 titulo:'asc'

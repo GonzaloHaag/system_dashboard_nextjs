@@ -95,6 +95,8 @@ model Pedido {
   status        StatusPedido        @default(pending)
   totalPrice    Float
   totalProducts Int
+  nota String?
+  metodoPago MetodoPago @default(MercadoPago)
 }
 
 // Tabla intermedia entre productos y pedidos
@@ -122,4 +124,11 @@ enum StatusPedido {
   pending
   inProgress
   completed
+}
+enum MetodoPago {
+  TarjetaCredito
+  TarjetaDebito
+  MercadoPago
+  Efectivo
+  Transferencia
 }

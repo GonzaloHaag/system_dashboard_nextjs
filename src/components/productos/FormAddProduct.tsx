@@ -56,7 +56,7 @@ export const FormAddProduct = ({ userId, categories }: Props) => {
             router.back();
         }
 
-        console.log(data.stock);
+        
 
     }
 
