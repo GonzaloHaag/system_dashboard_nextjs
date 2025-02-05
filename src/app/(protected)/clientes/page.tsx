@@ -5,14 +5,14 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 
-export const metadata:Metadata = {
-   title:'Clientes'
+export const metadata: Metadata = {
+  title: 'Clientes'
 }
 
-export default async function ClientesPage(props:{
-  searchParams?:Promise<{
-    search?:string;
-    page?:string;
+export default async function ClientesPage(props: {
+  searchParams?: Promise<{
+    search?: string;
+    page?: string;
   }>
 }) {
 
@@ -24,11 +24,12 @@ export default async function ClientesPage(props:{
 
   const searchParams = await props.searchParams;
   const searchQuery = searchParams?.search ?? '';
+  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   return (
     <section className="w-full flex flex-col gap-y-6">
       <SearchBarAndButtons placeholder="Buscar cliente..." textButton="Nuevo cliente" linkHref='/clientes/nuevo-cliente' />
-      <Suspense key={ searchQuery } fallback={<SkeletonTableClients />}>
-        <TableClients userId={userId} searchQuery={ searchQuery } />
+      <Suspense key={searchQuery} fallback={<SkeletonTableClients />}>
+        <TableClients userId={userId} searchQuery={searchQuery} page={page} />
       </Suspense>
     </section>
   );

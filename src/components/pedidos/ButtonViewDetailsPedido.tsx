@@ -63,6 +63,10 @@ export const ButtonViewDetailsPedido = ({ pedido }: { pedido: Pedido }) => {
                         <h4 className="font-semibold">Método de pago:</h4>
                         <p>{statusLabelMetodoPago[pedido.metodoPago]}</p>
                     </div>
+                    <div>
+                        <h4 className="font-semibold">Total:</h4>
+                        <p>{FormatoMoneda(pedido.totalPrice)}</p>
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>

@@ -14,7 +14,7 @@ interface Props {
 }
 interface CategoryInputs {
     nombre: string;
-    imagen: string | null;
+    imagen: FileList | null;
 }
 
 export const FormEditCategory = ({ userId,category } : Props ) => {
@@ -22,14 +22,14 @@ export const FormEditCategory = ({ userId,category } : Props ) => {
     const { handleSubmit, register,formState:{ isValid,isSubmitting } } = useForm({
         defaultValues: {
             nombre: category.nombre,
-            imagen: category.imagen
+            imagen: null
         }
     });
 
     const router = useRouter();
 
     const formCategorySubmit: SubmitHandler<CategoryInputs> = async (data) => {
-        const respuesta = await editCategoryWithId(userId,category.id,data.nombre,data.imagen);
+        const respuesta = await editCategoryWithId(userId,category.id,data.nombre,data.imagen && data.imagen[0]);
         if(!respuesta.ok) {
             toast.error(respuesta.message)
             return;
@@ -49,7 +49,7 @@ export const FormEditCategory = ({ userId,category } : Props ) => {
             </div>
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="imagen-category">Imagen</label>
-                <Input id="imagen-category" type="file" {...register('imagen', { required: false })} />
+                <Input id="imagen-category" type="file" {...register('imagen', { required: false })} accept="image/png, image/jpeg, image/webp, image/avif" />
             </div>
             <div className="flex items-center gap-x-4 justify-end">
                 <Button variant={'outline'} type="button" onClick={() => router.back()} title="Cancelar">

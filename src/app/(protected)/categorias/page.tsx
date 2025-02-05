@@ -24,11 +24,12 @@ export default async function CategoriasPage(props: {
 
   const searchParams = await props.searchParams;
   const searchQuery = searchParams?.search ?? '';
+  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   return (
     <section className="w-full flex flex-col gap-y-6">
       <SearchBarAndButtons placeholder="Buscar categoría..." textButton="Nueva categoría" linkHref='/categorias/nueva-categoria' />
       <Suspense key={searchQuery} fallback={<SkeletonTableCategories />}>
-        <TableCategories userId={userId} searchQuery={searchQuery} />
+        <TableCategories userId={userId} searchQuery={searchQuery} page={ page } />
       </Suspense>
 
     </section>

@@ -2,10 +2,10 @@
 import { deleteCategoryWithId } from "@/actions";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
-export const ButtonDeleteCategory = ({ categoryId }: { categoryId: number }) => {
+export const ButtonDeleteCategory = ({ categoryId,imagenCategory }: { categoryId: number,imagenCategory:string | null }) => {
 
     const clickDeleteCategory = async () => {
-        const respuesta = await deleteCategoryWithId(categoryId);
+        const respuesta = await deleteCategoryWithId(categoryId,imagenCategory);
         if (!respuesta.ok) {
             toast.error(respuesta.message);
             return;

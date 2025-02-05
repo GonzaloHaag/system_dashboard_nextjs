@@ -12,13 +12,13 @@ export default async function DashboardPage() {
   const userId = parseInt(session.user.id);
   return (
     <section className="w-full flex flex-col gap-y-10">
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <Card text="Ventas totales" count={'1,200'} Icon={ShoppingBagIcon} porcentaje={15.8} />
         <Card text="Total recaudado" count={'$83,560'} Icon={BadgeDollarSignIcon} porcentaje={-20.3} />
         <Card text="Clientes activos" count={'200'} Icon={UsersIcon} porcentaje={56.00} />
         <Card text="Productos totales" count={'620'} Icon={BoxIcon} porcentaje={100} />
       </div>
-      <div className="grid grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div className="flex flex-col gap-y-2">
           <h2 className="text-neutral-900 font-medium text-lg text-center">Ventas totales</h2>
           <SalesChart />

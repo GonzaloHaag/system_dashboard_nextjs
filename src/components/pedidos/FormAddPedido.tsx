@@ -93,12 +93,12 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
         }
 
         // Verificar stock antes de guardar
-        const stockErrors = orderItems.some(orderItem => {
+        const stockErrors = orderItems.filter(orderItem => {
             const product = productos.find(p => p.id === orderItem.productId);
             return product && product.stock < orderItem.quantity;
         });
 
-        if (stockErrors) {
+        if (stockErrors.length > 0) {
             toast.error('No hay suficiente stock para uno o más productos');
             return;
         }

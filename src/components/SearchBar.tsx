@@ -33,7 +33,7 @@ export const SearchBar = ({ placeholder } : Props) => {
       }}
       type="search" 
       placeholder={ placeholder } 
-      className="h-full w-full rounded-md outline-none border border-neutral-200 indent-8 pr-2 transition-colors duration-200 focus:border-neutral-900" />
+      className="h-10 sm:h-full w-full rounded-md outline-none border border-neutral-200 indent-8 pr-2 transition-colors duration-200 focus:border-neutral-900" />
       <SearchIcon size={16} className="absolute top-1/2 left-2 transform -translate-y-1/2 text-neutral-500" />
     </form>
   )

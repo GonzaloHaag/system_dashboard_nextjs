@@ -2,6 +2,8 @@ export { LoginForm } from './login/LoginForm';
 export { SearchBar } from './SearchBar';
 export { SearchBarAndButtons } from './SearchBarAndButtons';
 export { ButtonEdit } from './ButtonEdit';
+export { ButtonExportCsv } from './ButtonExportCsv';
+export { Pagination } from './Pagination';
 /** Clients */
 export { TableClients } from './clients/TableClients';
 export { SkeletonTableClients } from './clients/SkeletonTableClients';
@@ -29,6 +31,8 @@ export { ButtonDeleteProduct } from './productos/ButtonDeleteProduct';
 /** Pedidos */
 export { FormAddPedido } from './pedidos/FormAddPedido';
 export { PedidosPageContainer } from './pedidos/PedidosPageContainer';
+export { PedidosFetcher } from './pedidos/PedidosFetcher';
+export { PedidosFetcherSkeleton } from './pedidos/PedidosFetcherSkeleton';
 export { SkeletonPedidosPageContainer } from './pedidos/SkeletonPedidosPageContainer';
 export { ButtonDeletePedido } from './pedidos/ButtonDeletePedido';
 export { ButtonViewDetailsPedido } from './pedidos/ButtonViewDetailsPedido';

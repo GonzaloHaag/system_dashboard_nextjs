@@ -33,7 +33,7 @@ type InputsProduct = {
     titulo: string;
     precio: number;
     stock: number;
-    imagen: string | null;
+    imagen: FileList | null;
     color: string;
     description:string;
     categoryType : { label:string, value:number }
@@ -47,7 +47,7 @@ export const FormEditProduct = ({ userId, categories,product }: Props) => {
            stock:product.stock,
            categoryType: { label:product.Category.nombre,value:product.Category.id },
            color:product.color,
-           imagen:product.imagen,
+           imagen:null,
            description:product.description
         }
     });
@@ -59,7 +59,7 @@ export const FormEditProduct = ({ userId, categories,product }: Props) => {
             data.titulo,
             data.precio,
             data.stock,
-            data.imagen,
+            data.imagen && data.imagen[0],
             data.color,
             data.description,
             data.categoryType.value

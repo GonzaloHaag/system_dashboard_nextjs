@@ -27,12 +27,24 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
             },
             select: {
                 id: true,
-                precio: true
+                precio: true,
+                stock:true
             }
         });
-        if (productsDB.length !== productsIds.length) {
-            throw new Error("Uno o más productos seleccionados no existen.");
+        const stockErrors = ordersItems.some(orderItem => {
+            const product = productsDB.find(p => p.id === orderItem.productId);
+            return !product || product.stock < orderItem.quantity;
+        });
+        
+        if (stockErrors) {
+            return {
+                ok:false,
+                message:'Uno o más productos no tienen suficiente stock.'
+            }
         }
+        // if (productsDB.length !== productsIds.length) {
+        //     throw new Error("Uno o más productos seleccionados no existen.");
+        // }
 
         const totalPriceOrder = ordersItems.reduce((total, item) => {
             const product = productsDB.find((p) => p.id === item.productId);

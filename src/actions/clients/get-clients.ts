@@ -3,7 +3,10 @@
 import prisma from "@/lib/prisma";
 
 
-export const getAllClients = async(userId:number,searchQuery:string) => {
+export const getAllClients = async(userId:number,searchQuery:string,page=1,take=12) => {
+
+    if(isNaN(Number(page))) page=1;
+    if(page<1) page = 1;
     try {
         const clients = searchQuery === '' ? await prisma.cliente.findMany({
             where : {
@@ -18,7 +21,9 @@ export const getAllClients = async(userId:number,searchQuery:string) => {
             },
             orderBy : {
                 id:'asc'
-            }
+            },
+            take : take,
+            skip: (page -1 ) * take
         }) : await prisma.cliente.findMany({
             where : {
                 usuarioId : userId,
@@ -39,9 +44,18 @@ export const getAllClients = async(userId:number,searchQuery:string) => {
             }
         });
 
+        const totalCount = await prisma.cliente.count({
+            where : {
+                usuarioId : userId
+            }
+        });
+
+        const totalPages = Math.ceil(totalCount / take );
+
         return {
             ok:true,
             message:'Clientes obtenidos',
+            totalPages,
             clients
         }
         

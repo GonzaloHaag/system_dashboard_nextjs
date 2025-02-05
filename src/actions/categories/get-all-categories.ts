@@ -2,9 +2,11 @@
 
 import prisma from "@/lib/prisma";
 
-export const getAllCategories = async (userId: number, searchQuery: string) => {
-    try {
+export const getAllCategories = async (userId: number, searchQuery: string,page=1,take=12) => {
 
+    if(isNaN(Number(page))) page=1;
+    if(page<1) page = 1;
+    try {
         const categorias = searchQuery === '' ? await prisma.category.findMany({
             where: {
                 usuarioId: userId
@@ -17,7 +19,9 @@ export const getAllCategories = async (userId: number, searchQuery: string) => {
             },
             orderBy : {
                 id:'asc'
-            }
+            },
+            take : take,
+            skip: (page -1 ) * take
         }) : await prisma.category.findMany({
             where: {
                 usuarioId: userId,
@@ -34,9 +38,19 @@ export const getAllCategories = async (userId: number, searchQuery: string) => {
             }
         });
 
+
+        const totalCount = await prisma.category.count({
+            where : {
+                usuarioId : userId
+            }
+        });
+
+        const totalPages = Math.ceil( totalCount / take );
+
         return {
             ok: true,
             message: 'Categorias obtenidas',
+            totalPages,
             categorias
         }
 

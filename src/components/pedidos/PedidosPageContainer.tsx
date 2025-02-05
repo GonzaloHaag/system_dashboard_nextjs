@@ -82,7 +82,7 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {columns.map((column) => (
                     <div key={column.id} className="p-2">
                         <div className="flex items-center gap-x-2 justify-center">

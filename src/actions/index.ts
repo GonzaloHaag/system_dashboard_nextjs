@@ -1,4 +1,5 @@
 export { LoginUser } from './login-user';
+export { uploadImage } from './upload-image';
 export { addClient } from './clients/add-client';
 export { getAllClients } from './clients/get-clients';
 export { deleteClientWithId } from './clients/delete-client';
@@ -21,5 +22,4 @@ export { addPedido } from './pedidos/add-pedido';
 export { updatePedidoStatus } from './pedidos/update-status-pedido';
 export { getAllPedidos } from './pedidos/get-all-pedidos';
 export { getFieldsPedidos } from './pedidos/get-fields-pedidos';
-export { getPedidosByStatus } from './pedidos/get-pedidos-by-status';
 export { deletePedidoWithId } from './pedidos/delete-pedido';

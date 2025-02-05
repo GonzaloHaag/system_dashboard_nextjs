@@ -24,11 +24,12 @@ export default async function ProductosPage(props:{
 
   const searchParams = await props.searchParams;
   const searchQuery = searchParams?.search ?? '';
+  const page = searchParams?.page ? parseInt(searchParams.page) : 1;
   return (
     <section className="w-full flex flex-col gap-y-6">
       <SearchBarAndButtons placeholder="Buscar producto..." textButton="Nuevo producto" linkHref='/productos/nuevo-producto' buttonImportarCsv={true} />
       <Suspense key={ searchQuery } fallback={<SkeletonTableProducts />}>
-        <TableProducts userId={userId} searchQuery={ searchQuery } />
+        <TableProducts userId={userId} searchQuery={ searchQuery } page={ page } />
       </Suspense>
     </section>
   );
