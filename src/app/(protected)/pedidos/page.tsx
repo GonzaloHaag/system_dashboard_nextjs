@@ -3,7 +3,6 @@ import { PedidosFetcher, PedidosFetcherSkeleton, SearchBarAndButtons } from "@/c
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { toast } from "sonner";
 
 export const metadata: Metadata = {
     title: 'Pedidos'
