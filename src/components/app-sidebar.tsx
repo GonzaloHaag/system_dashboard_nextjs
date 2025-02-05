@@ -1,9 +1,10 @@
 'use client';
 
 import { ClipboardListIcon, LayoutDashboardIcon, LayoutPanelTopIcon, ReceiptIcon, UsersIcon } from "lucide-react";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavUser } from "./nav-user";
 
 const items = [
     {
@@ -40,6 +41,13 @@ const items = [
 export function AppSideBar() {
 
     const pathname = usePathname();
+      const data = {
+        user: {
+          name: "Sofia peralta",
+          email: "elpochomates13@gmail.com",
+          avatar: "/avatars/shadcn.jpg",
+        },
+      }
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
@@ -49,7 +57,7 @@ export function AppSideBar() {
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>
-                        Aplicación
+                        Sistema
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -69,6 +77,9 @@ export function AppSideBar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+               <NavUser user={ data.user } />
+            </SidebarFooter>
         </Sidebar>
     )
 }

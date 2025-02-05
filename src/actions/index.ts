@@ -1,4 +1,5 @@
 export { LoginUser } from './login-user';
+export { LogoutUser } from './logout-user';
 export { uploadImage } from './upload-image';
 export { addClient } from './clients/add-client';
 export { getAllClients } from './clients/get-clients';
