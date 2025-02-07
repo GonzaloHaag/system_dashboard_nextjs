@@ -81,6 +81,7 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
         });
         revalidatePath('/pedidos');
         revalidatePath('/ventas');
+        revalidatePath('/dashboard');
         return {
             ok: true,
             message: 'Venta registrada correctamente!',

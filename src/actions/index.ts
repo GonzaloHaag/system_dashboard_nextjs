@@ -6,6 +6,7 @@ export { getAllClients } from './clients/get-clients';
 export { deleteClientWithId } from './clients/delete-client';
 export { editClientWithId } from './clients/edit-client';
 export { findClientWithId } from './clients/find-client';
+export { getTotalCountClientsActive } from './clients/get-total-count-active-clients';
 
 export { addCategory } from './categories/add-category';
 export { getAllCategories,getCategoriesProductAdd } from './categories/get-all-categories';
@@ -18,6 +19,7 @@ export { getAllProducts } from './productos/get-all-products';
 export { editProductWithId } from './productos/edit-product';
 export { findProductWithId } from './productos/find-product';
 export { deleteProductWithId } from './productos/delete-product';
+export { getTotalProductsCount } from './productos/get-total-count-products';
 
 export { addPedido } from './pedidos/add-pedido';
 export { updatePedidoStatus } from './pedidos/update-status-pedido';
@@ -28,3 +30,5 @@ export { deletePedidoWithId } from './pedidos/delete-pedido';
 export { createVentaWithPedidoId } from './ventas/create-venta-with-pedidoid';
 export { getAllVentas } from './ventas/get-all-ventas';
 export { deleteVentaWithId } from './ventas/delete-venta';
+export { getTotalCountVentas } from './ventas/total-count-ventas';
+export { getTotalGanancias } from './ventas/get-total-recaudado';

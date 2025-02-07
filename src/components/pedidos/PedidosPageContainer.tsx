@@ -109,14 +109,14 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
                 return;
             }
             toast.success(ventaResponse.message);
-            setTimeout(async () => {
-                const deleteResponse = await deletePedidoWithId(movedPedido.id);
-                if (!deleteResponse.ok) {
-                    toast.error(deleteResponse.message);
-                    return;
-                }
-                toast.success("Se eliminaron los pedidos completados!");
-            }, 1 * 60 * 1000); // 1 minuto
+            // setTimeout(async () => {
+            //     const deleteResponse = await deletePedidoWithId(movedPedido.id);
+            //     if (!deleteResponse.ok) {
+            //         toast.error(deleteResponse.message);
+            //         return;
+            //     }
+            //     toast.success("Se eliminaron los pedidos completados!");
+            // }, 1 * 60 * 1000); // 1 minuto
             
         }
 

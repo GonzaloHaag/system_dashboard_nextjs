@@ -17,7 +17,10 @@ export { TableCategories } from './categorias/TableCategories';
 export { SkeletonTableCategories } from './categorias/SkeletonTableCategories';
 export { ButtonDeleteCategory } from './categorias/ButtonDeleteCategory';
 /** Dashboard */
-export { Card } from './dashboard/Card';
+export { CardSales } from './dashboard/CardSales';
+export { CardGanancias } from './dashboard/CardGanancias';
+export { CardProductosTotales } from './dashboard/CardProductosTotales';
+export { CardClientesActivos } from './dashboard/CardClientesActivos';
 export { SalesChart } from './dashboard/SalesChart';
 export { WinningsChart } from './dashboard/WinningsChart';
 export { TableOrders } from './dashboard/TableOrders';

@@ -30,10 +30,6 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
     const totalVentasPrice = ventas?.reduce(
         (acc, item) => acc + item.precioTotal, 0
     );
-
-    const gananciasTotales = ventas?.reduce(
-        (acc, item) => acc + item.ganancias!, 0
-    )
     return (
         <div className="flex flex-col">
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg h-full">
@@ -110,14 +106,6 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
                             <td className="px-6 py-4"></td>
                             <td className="px-6 py-4"></td>
                             <td className="px-6 py-4 text-green-500 font-semibold">{FormatoMoneda(totalVentasPrice ?? 0)}</td>
-                            <td className="px-6 py-4"></td>
-                        </tr>
-                        <tr className="font-medium text-gray-900">
-                            <th scope="row" className="px-6 py-4 text-sm">Ganancia</th>
-                            <td className="px-6 py-4"></td>
-                            <td className="px-6 py-4"></td>
-                            <td className="px-6 py-4"></td>
-                            <td className="px-6 py-4 text-green-600 font-semibold">{FormatoMoneda(gananciasTotales ?? 0)}</td>
                             <td className="px-6 py-4"></td>
                         </tr>
                     </tfoot>

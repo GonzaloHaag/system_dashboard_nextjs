@@ -19,7 +19,7 @@ export default async function PedidosPage() {
         <section className="w-full flex flex-col gap-y-6">
             <SearchBarAndButtons placeholder="Buscar pedido..." textButton="Nuevo pedido" linkHref='/pedidos/nuevo-pedido' />
             <hr />
-            <span className="text-sm text-gray-500">Nota* Los pedidos completados se eliminaran luego de 1 minuto. Los encontrarás en ventas</span>
+            <span className="text-sm text-gray-500">Nota* Los pedidos completados se moveran a ventas. Puedes eliminarlos sin problemas.</span>
             <Suspense fallback={<PedidosFetcherSkeleton />}>
                 <PedidosFetcher userId={ userId } />
             </Suspense>
