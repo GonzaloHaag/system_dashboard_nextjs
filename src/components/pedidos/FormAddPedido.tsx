@@ -23,6 +23,7 @@ interface Props {
         id: number;
         titulo: string;
         stock: number;
+        color: string;
     }[];
 }
 
@@ -128,16 +129,18 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
         label: capitalizeFirstLetter(cliente.nombre),
         value: cliente.id
     }));
-
     const availableProductsOptions = productos
         .filter((producto) => !orderItems.some((orderItem) => orderItem.productId === producto.id))
         .map((producto) => ({
-            label: capitalizeFirstLetter(producto.titulo),
-            value: producto.id
+            label: producto.titulo, // Usar solo el texto para evitar el error
+            value: producto.id,
+            color: producto.color, // Agregar el color como dato extra
+            stock: producto.stock
         }));
 
     return (
         <form onSubmit={handleSubmit(formAddPedidoSubmit)} className="form_class_global">
+
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="cliente">Cliente*</label>
                 <Controller
@@ -171,6 +174,18 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                                 onChange={(selectedOption) => updateOrderItem(index, selectedOption?.value || 0, orderItem.quantity)}
                                 noOptionsMessage={() => 'No se encontraron resultados'}
                                 options={availableProductsOptions}
+                                formatOptionLabel={(e) => (
+                                    <div className="flex items-center justify-between gap-x-1 w-full">
+                                        <div className="flex items-center gap-x-2">
+                                            <span className="flex-1">{capitalizeFirstLetter(e.label)}</span>
+                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: e.color }}></div>
+                                        </div>
+                                        <div className="flex items-center gap-x-1 text-gray-400 text-xs">
+                                            <span>Stock:</span>
+                                            <span>{e.stock}</span>
+                                        </div>
+                                    </div>
+                                )}
                             />
                             <Input type="number"
                                 placeholder="Cantidad"

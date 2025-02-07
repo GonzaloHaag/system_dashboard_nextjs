@@ -4,11 +4,8 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "../upload-image";
 
-export const editCategoryWithId = async(userId:number,categoryId:number,nombre:string,imagen:File | null) => {
+export const editCategoryWithId = async(userId:number,categoryId:number,nombre:string) => {
     try {
-
-        const imageUrl = imagen ? await uploadImage(imagen) : null;
-
         await prisma.category.update({
             where : {
                 id:categoryId
@@ -16,7 +13,6 @@ export const editCategoryWithId = async(userId:number,categoryId:number,nombre:s
             data : {
                 usuarioId:userId,
                 nombre:nombre,
-                imagen:imageUrl
             }
         });
 

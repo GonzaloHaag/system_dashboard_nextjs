@@ -28,7 +28,7 @@ export const Card = ({ text, count, Icon, porcentaje }: CardProps) => {
                                 )
                         }
                     </Badge>
-                    <span className="text-neutral-400 text-sm">Último mes</span>
+                    <span className="text-neutral-400 text-sm">Último périodo</span>
                 </div>
             </div>
         </div>

@@ -42,9 +42,9 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 message:'Uno o más productos no tienen suficiente stock.'
             }
         }
-        // if (productsDB.length !== productsIds.length) {
-        //     throw new Error("Uno o más productos seleccionados no existen.");
-        // }
+        if (productsDB.length !== productsIds.length) {
+            throw new Error("Uno o más productos seleccionados no existen.");
+        }
 
         const totalPriceOrder = ordersItems.reduce((total, item) => {
             const product = productsDB.find((p) => p.id === item.productId);

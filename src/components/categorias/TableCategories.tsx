@@ -1,5 +1,4 @@
 import { getAllCategories } from "@/actions"
-import Image from "next/image";
 import { toast } from "sonner";
 import { ButtonEdit } from "../ButtonEdit";
 import { ButtonDeleteCategory } from "./ButtonDeleteCategory";
@@ -30,9 +29,6 @@ export const TableCategories = async ({ userId, searchQuery,page }: Props) => {
                                 Nombre
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Imagen
-                            </th>
-                            <th scope="col" className="px-6 py-3">
                                 Fecha de creación
                             </th>
                             <th scope="col" className="px-6 py-3">
@@ -52,15 +48,12 @@ export const TableCategories = async ({ userId, searchQuery,page }: Props) => {
                                             {capitalizeFirstLetter(category.nombre)}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <Image src={category.imagen ? category.imagen : '/images/placeholder.webp'} alt="Imagen de la categoría" width={45} height={45} className="aspect-video object-cover" />
-                                        </td>
-                                        <td className="px-6 py-4">
                                             {category.createdAt.toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-x-4">
                                                 <ButtonEdit basePath="categorias/editar-categoria" id={category.id} />
-                                                <ButtonDeleteCategory categoryId={category.id} imagenCategory={category.imagen} />
+                                                <ButtonDeleteCategory categoryId={category.id} />
                                             </div>
                                         </td>
                                     </tr>

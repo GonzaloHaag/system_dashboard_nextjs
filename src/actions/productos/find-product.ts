@@ -12,10 +12,9 @@ export const findProductWithId = async(productId:number) => {
                 id: true,
                 titulo: true,
                 precio: true,
+                costo:true,
                 stock: true,
                 color:true,
-                imagen: true,
-                description:true,
                 Category: {
                     select: {
                         id:true,

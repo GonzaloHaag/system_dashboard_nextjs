@@ -2,11 +2,9 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { uploadImage } from "../upload-image";
 
-export const editProductWithId = async (userId: number, productId: number, titulo: string, precio: number, stock: number, imagen: File | null, color: string, description: string, categoryId: number) => {
+export const editProductWithId = async (userId: number, productId: number, titulo: string, precio: number,costo:number,stock: number, color: string,categoryId: number) => {
     try {
-        const imageUrl = imagen ? await uploadImage(imagen) : null;
         const product = await prisma.product.findUnique({
             where: {
                 id: productId
@@ -26,10 +24,9 @@ export const editProductWithId = async (userId: number, productId: number, titul
                 usuarioId: userId,
                 titulo: titulo,
                 precio: parseFloat(precio.toString()),
+                costo:parseFloat(costo.toString()),
                 stock: parseInt(stock.toString()),
-                imagen: imageUrl,
                 color: color,
-                description: description,
                 categoryId: categoryId
             }
         });

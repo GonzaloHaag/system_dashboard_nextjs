@@ -1,26 +1,28 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd"
-import { Pedido, StatusPedido } from "@/interfaces"
-import { PedidoItem } from "./PedidoItem"
-import { updatePedidoStatus } from "@/actions"
-import { toast } from "sonner"
-
+'use client';
+import { useEffect, useState } from "react";
+import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd";
+import { Pedido, StatusPedido } from "@/interfaces";
+import { PedidoItem } from "./PedidoItem";
+import { createVentaWithPedidoId, deletePedidoWithId, updatePedidoStatus } from "@/actions";
+import { toast } from "sonner";
 
 type Column = {
-    id: string
-    title: string
-    pedidos: Pedido[]
-}
+    id: string;
+    title: string;
+    pedidos: Pedido[];
+};
 
 type BoardProps = {
-    initialPedidos: Pedido[]
-}
+    initialPedidos: Pedido[];
+};
 
 export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
     const [columns, setColumns] = useState<Column[]>([
-        { id: "pending", title: "Pendientes", pedidos: initialPedidos.filter((p) => p.status === "pending") },
+        {
+            id: "pending",
+            title: "Pendientes",
+            pedidos: initialPedidos.filter((p) => p.status === "pending"),
+        },
         {
             id: "inProgress",
             title: "En progreso",
@@ -32,53 +34,101 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
             pedidos: initialPedidos.filter((p) => p.status === "completed"),
         },
     ]);
+
     // useEffect para sincronizar columns con initialPedidos
     useEffect(() => {
         setColumns([
-            { id: "pending", title: "Pendientes", pedidos: initialPedidos.filter((p) => p.status === "pending") },
-            { id: "inProgress", title: "En progreso", pedidos: initialPedidos.filter((p) => p.status === "inProgress") },
-            { id: "completed", title: "Completados", pedidos: initialPedidos.filter((p) => p.status === "completed") },
+            {
+                id: "pending",
+                title: "Pendientes",
+                pedidos: initialPedidos.filter((p) => p.status === "pending"),
+            },
+            {
+                id: "inProgress",
+                title: "En progreso",
+                pedidos: initialPedidos.filter((p) => p.status === "inProgress"),
+            },
+            {
+                id: "completed",
+                title: "Completados",
+                pedidos: initialPedidos.filter((p) => p.status === "completed"),
+            },
         ]);
     }, [initialPedidos]);
 
     const onDragEnd = async (result: DropResult) => {
-        const { source, destination } = result
-        if (!destination) return
+        const { source, destination } = result;
+        if (!destination) return;
 
-        const sourceColumn = columns.find((col) => col.id === source.droppableId)
-        const destColumn = columns.find((col) => col.id === destination.droppableId)
+        const sourceColumn = columns.find((col) => col.id === source.droppableId);
+        const destColumn = columns.find((col) => col.id === destination.droppableId);
 
-        if (!sourceColumn || !destColumn) return
+        if (!sourceColumn || !destColumn) return;
 
-        const sourcePedidos = Array.from(sourceColumn.pedidos)
-        const destPedidos = source.droppableId === destination.droppableId ? sourcePedidos : Array.from(destColumn.pedidos)
+        const sourcePedidos = Array.from(sourceColumn.pedidos);
+        const destPedidos =
+            source.droppableId === destination.droppableId ? sourcePedidos : Array.from(destColumn.pedidos);
 
-        const [movedPedido] = sourcePedidos.splice(source.index, 1)
-        destPedidos.splice(destination.index, 0, { ...movedPedido, status: destColumn.id as Pedido["status"] })
+        const [movedPedido] = sourcePedidos.splice(source.index, 1);
+
+        // Si el destino es la misma columna "Completados" y ya contiene el pedido, no lo muevas
+        if (destColumn.id === "completed" && destPedidos.some((p) => p.id === movedPedido.id)) {
+            toast.error("El pedido ya está en la columna Completados.");
+            return; // No hacer nada si el pedido ya está allí
+        }
+
+        destPedidos.splice(destination.index, 0, { ...movedPedido, status: destColumn.id as Pedido["status"] });
 
         const newColumns = columns.map((col) => {
             if (col.id === source.droppableId) {
-                return { ...col, pedidos: sourcePedidos }
+                return { ...col, pedidos: sourcePedidos };
             }
             if (col.id === destination.droppableId) {
-                return { ...col, pedidos: destPedidos }
+                return { ...col, pedidos: destPedidos };
             }
-            return col
-        })
+            return col;
+        });
 
-        setColumns(newColumns)
+        setColumns(newColumns);
 
-        // Aquí llamaríamos a la función para actualizar el estado en el backend
-        // updatePedidoStatus(movedPedido.id, destColumn.id)
+        if (destColumn.id === "completed") {
+            const ventaResponse = await createVentaWithPedidoId(movedPedido.id);
+            if (!ventaResponse.ok) {
+                toast.error(ventaResponse.message);
+                setColumns((prevColumns) => {
+                    return prevColumns.map((col) => {
+                        if (col.id === source.droppableId) {
+                            return { ...col, pedidos: [...col.pedidos, { ...movedPedido, status: sourceColumn.id as StatusPedido }] };
+                        }
+                        if (col.id === destination.droppableId) {
+                            return { ...col, pedidos: col.pedidos.filter((p) => p.id !== movedPedido.id) };
+                        }
+                        return col;
+                    });
+                });
+                return;
+            }
+            toast.success(ventaResponse.message);
+            setTimeout(async () => {
+                const deleteResponse = await deletePedidoWithId(movedPedido.id);
+                if (!deleteResponse.ok) {
+                    toast.error(deleteResponse.message);
+                    return;
+                }
+                toast.success("Se eliminaron los pedidos completados!");
+            }, 1 * 60 * 1000); // 1 minuto
+            
+        }
+
+        // Aquí actualizarías el estado en el backend si todo va bien
         const respuesta = await updatePedidoStatus(movedPedido.id, destColumn.id as StatusPedido);
         if (!respuesta.ok) {
-            toast.error(respuesta.message)
+            toast.error(respuesta.message);
             return;
         }
 
         toast.success(respuesta.message);
-
-    }
+    };
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -96,10 +146,16 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
                                 <ul
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    className={`space-y-2 min-h-[300px] max-h-[700px] overflow-y-auto overflow-x-hidden ${snapshot.isDraggingOver ? "bg-gray-100" : ""}`}
+                                    className={`space-y-2 min-h-[300px] max-h-[700px] overflow-y-auto overflow-x-hidden ${snapshot.isDraggingOver ? "bg-gray-100" : ""
+                                        }`}
                                 >
                                     {column.pedidos.map((pedido, index) => (
-                                        <Draggable key={pedido.id} draggableId={pedido.id.toString()} index={index}>
+                                        <Draggable
+                                            key={pedido.id}
+                                            draggableId={pedido.id.toString()}
+                                            index={index}
+                                            isDragDisabled={column.id === "completed"} // Deshabilitar drag en columna Completados
+                                        >
                                             {(provided, snapshot) => (
                                                 <li
                                                     ref={provided.innerRef}
@@ -120,6 +176,5 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
                 ))}
             </div>
         </DragDropContext>
-    )
-}
-
+    );
+};

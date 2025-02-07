@@ -13,9 +13,6 @@ export const SkeletonTableCategories = () => {
                             Nombre
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Imagen
-                        </th>
-                        <th scope="col" className="px-6 py-3">
                             Fecha de creación
                         </th>
                         <th scope="col" className="px-6 py-3">
@@ -31,9 +28,6 @@ export const SkeletonTableCategories = () => {
                         <td className="px-6 py-4">
                             <Skeleton className="w-full h-6" />
                         </td>
-                        <td className='px-6 py-4'>
-                            <Skeleton className="w-[2.5rem] h-[2.5rem]" />
-                        </td>
                         <td className="px-6 py-4">
                             <Skeleton className="w-full h-6" />
                         </td>
@@ -48,9 +42,6 @@ export const SkeletonTableCategories = () => {
                         <td className="px-6 py-4">
                             <Skeleton className="w-full h-6" />
                         </td>
-                        <td className='px-6 py-4'>
-                            <Skeleton className="w-[2.5rem] h-[2.5rem]" />
-                        </td>
                         <td className="px-6 py-4">
                             <Skeleton className="w-full h-6" />
                         </td>
@@ -64,9 +55,6 @@ export const SkeletonTableCategories = () => {
                         </th>
                         <td className="px-6 py-4">
                             <Skeleton className="w-full h-6" />
-                        </td>
-                        <td className='px-6 py-4'>
-                            <Skeleton className="w-[2.5rem] h-[2.5rem]" />
                         </td>
                         <td className="px-6 py-4">
                             <Skeleton className="w-full h-6" />

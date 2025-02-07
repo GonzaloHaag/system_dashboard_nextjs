@@ -36,3 +36,7 @@ export { PedidosFetcherSkeleton } from './pedidos/PedidosFetcherSkeleton';
 export { SkeletonPedidosPageContainer } from './pedidos/SkeletonPedidosPageContainer';
 export { ButtonDeletePedido } from './pedidos/ButtonDeletePedido';
 export { ButtonViewDetailsPedido } from './pedidos/ButtonViewDetailsPedido';
+/** Ventas */
+export { TableVentas } from './ventas/TableVentas';
+export { SkeletonTableVentas } from './ventas/SkeletonTableVentas';
+export { ButtonDeleteVenta } from './ventas/ButtonDeleteVenta';

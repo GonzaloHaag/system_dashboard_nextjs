@@ -17,38 +17,36 @@ interface Props {
     }[];
     product: {
         id: number;
-        imagen: string | null;
         Category: {
-            id:number;
+            id: number;
             nombre: string;
         };
         titulo: string;
         precio: number;
+        costo:number;
         stock: number;
         color: string;
-        description:string;
     }
 }
 type InputsProduct = {
     titulo: string;
     precio: number;
+    costo: number;
     stock: number;
-    imagen: FileList | null;
     color: string;
-    description:string;
-    categoryType : { label:string, value:number }
+    description: string;
+    categoryType: { label: string, value: number }
 }
-export const FormEditProduct = ({ userId, categories,product }: Props) => {
+export const FormEditProduct = ({ userId, categories, product }: Props) => {
 
     const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsProduct>({
         defaultValues: {
-           titulo:product.titulo,
-           precio:product.precio,
-           stock:product.stock,
-           categoryType: { label:product.Category.nombre,value:product.Category.id },
-           color:product.color,
-           imagen:null,
-           description:product.description
+            titulo: product.titulo,
+            precio: product.precio,
+            costo:product.costo,
+            stock: product.stock,
+            categoryType: { label: product.Category.nombre, value: product.Category.id },
+            color: product.color,
         }
     });
     const router = useRouter();
@@ -58,10 +56,9 @@ export const FormEditProduct = ({ userId, categories,product }: Props) => {
             product.id,
             data.titulo,
             data.precio,
+            data.costo,
             data.stock,
-            data.imagen && data.imagen[0],
             data.color,
-            data.description,
             data.categoryType.value
         );
         if (!respuesta.ok) {
@@ -79,8 +76,8 @@ export const FormEditProduct = ({ userId, categories,product }: Props) => {
 
 
     const categoriesOptions = categories.map((category) => ({
-        value:category.id,
-        label:capitalizeFirstLetter(category.nombre)
+        value: category.id,
+        label: capitalizeFirstLetter(category.nombre)
     }))
 
 
@@ -88,50 +85,44 @@ export const FormEditProduct = ({ userId, categories,product }: Props) => {
         <form onSubmit={handleSubmit(formAddProductSubmit)} className="form_class_global">
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="titulo">Titulo*</label>
-                <Input required id="titulo" type="text" {...register('titulo', { required: true })} placeholder="Ej: Auriculares" defaultValue={product.titulo} />
+                <Input required id="titulo" type="text" {...register('titulo', { required: true })} placeholder="Ej: Auriculares" />
             </div>
             <div className="grid grid-cols-2 gap-x-8 items-start">
                 <div className="flex flex-col items-start gap-y-2">
-                    <label htmlFor="precio">Precio*</label>
-                    <Input id="precio" type="number" min={0} required {...register('precio', { required: true })} placeholder="0.00" defaultValue={product.precio} />
+                    <label htmlFor="costo">Costo*</label>
+                    <Input id="costo" type="number" min={0} required {...register('costo', { required: true })} placeholder="0.00" />
                 </div>
                 <div className="flex flex-col items-start gap-y-2">
-                    <label htmlFor="stock">Stock*</label>
-                    <Input id="stock" type="number" min={0} required {...register('stock', { required: true })} defaultValue={product.stock} />
+                    <label htmlFor="precio">Precio*</label>
+                    <Input id="precio" type="number" min={0} required {...register('precio', { required: true })} placeholder="0.00" />
                 </div>
+            </div>
+            <div className="flex flex-col items-start gap-y-2">
+                <label htmlFor="stock">Stock*</label>
+                <Input id="stock" type="number" min={0} required {...register('stock', { required: true })} defaultValue={0} />
             </div>
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="categoria">Categoría*</label>
-                <Controller 
-                name="categoryType"
-                control={ control }
-                rules={{ required:true }}
-                render={({ field }) => (
-                    <Select
-                    
-                    id="categoria"
-                    required
-                    className="w-full focus:outline-neutral-900"
-                    placeholder='Seleccionar categoría'
-                    noOptionsMessage={() => 'No se encontraron resultados'}
-                    {...field}
-                    options={ categoriesOptions }
-                    />
-                )}
+                <Controller
+                    name="categoryType"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <Select
+                            id="categoria"
+                            required
+                            className="w-full focus:outline-neutral-900"
+                            placeholder='Seleccionar categoría'
+                            noOptionsMessage={() => 'No se encontraron resultados'}
+                            {...field}
+                            options={categoriesOptions}
+                        />
+                    )}
                 />
             </div>
-
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="color">Seleccionar color*</label>
-                <Input id="color" {...register('color',{ required:true })} type="color" required defaultValue={product.color} className="h-12 w-32 border rounded-md cursor-pointer"  />
-            </div>
-            <div className="flex flex-col items-start gap-y-2">
-                <label htmlFor="imagen">Imagen</label>
-                <Input id="imagen" {...register('imagen',{ required:false })} type="file" />
-            </div>
-            <div className="flex flex-col items-start gap-y-2">
-                <label htmlFor="imagen">Descripción*</label>
-                <Textarea {...register('description',{ required:true })} required id="descripcion" defaultValue={product.description} />
+                <Input id="color" {...register('color', { required: true })} type="color" required defaultValue={'#000000'} className="h-12 w-32 border rounded-md cursor-pointer" />
             </div>
             <div className="flex items-center gap-x-4 justify-end">
                 <Button variant={'outline'} type="button" onClick={() => router.back()} title="Cancelar">

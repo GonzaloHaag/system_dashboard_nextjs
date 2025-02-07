@@ -1,11 +1,10 @@
 'use client';
-import { deleteCategoryWithId } from "@/actions";
+import { deleteVentaWithId } from "@/actions";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
-export const ButtonDeleteCategory = ({ categoryId}: { categoryId: number }) => {
-
-    const clickDeleteCategory = async () => {
-        const respuesta = await deleteCategoryWithId(categoryId);
+export const ButtonDeleteVenta = ({ ventaId }: { ventaId: number }) => {
+    const clickDeleteVenta = async () => {
+        const respuesta = await deleteVentaWithId(ventaId);
         if (!respuesta.ok) {
             toast.error(respuesta.message);
             return;
@@ -13,7 +12,7 @@ export const ButtonDeleteCategory = ({ categoryId}: { categoryId: number }) => {
         toast.warning(respuesta.message);
     }
     return (
-        <button type="button" title="Borrar" onClick={clickDeleteCategory}>
+        <button type="button" title="Borrar" onClick={clickDeleteVenta}>
             <Trash2Icon className="text-red-600" />
         </button>
     )

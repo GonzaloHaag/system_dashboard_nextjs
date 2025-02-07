@@ -13,8 +13,7 @@ interface Props {
     category:Categoria;
 }
 interface CategoryInputs {
-    nombre: string;
-    imagen: FileList | null;
+    nombre: string
 }
 
 export const FormEditCategory = ({ userId,category } : Props ) => {
@@ -22,14 +21,13 @@ export const FormEditCategory = ({ userId,category } : Props ) => {
     const { handleSubmit, register,formState:{ isValid,isSubmitting } } = useForm({
         defaultValues: {
             nombre: category.nombre,
-            imagen: null
         }
     });
 
     const router = useRouter();
 
     const formCategorySubmit: SubmitHandler<CategoryInputs> = async (data) => {
-        const respuesta = await editCategoryWithId(userId,category.id,data.nombre,data.imagen && data.imagen[0]);
+        const respuesta = await editCategoryWithId(userId,category.id,data.nombre);
         if(!respuesta.ok) {
             toast.error(respuesta.message)
             return;
@@ -46,10 +44,6 @@ export const FormEditCategory = ({ userId,category } : Props ) => {
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="nombre-category">Nombre*</label>
                 <Input id="nombre-category" type="text" {...register('nombre', { required: true })} required placeholder="Ej:relojes" />
-            </div>
-            <div className="flex flex-col items-start gap-y-2">
-                <label htmlFor="imagen-category">Imagen</label>
-                <Input id="imagen-category" type="file" {...register('imagen', { required: false })} accept="image/png, image/jpeg, image/webp, image/avif" />
             </div>
             <div className="flex items-center gap-x-4 justify-end">
                 <Button variant={'outline'} type="button" onClick={() => router.back()} title="Cancelar">

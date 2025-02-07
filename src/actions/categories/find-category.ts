@@ -13,7 +13,6 @@ export const findCategoryWithId = async(categoryId:number) => {
                 usuarioId:true,
                 id:true,
                 nombre:true,
-                imagen:true
             }
         });
 

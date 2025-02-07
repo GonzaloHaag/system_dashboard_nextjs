@@ -41,6 +41,8 @@ model Usuario {
   productos     Product[]
   // Un usuario va a tener muchos pedidos 
   pedidos       Pedido[]
+  // Un usuario va a tener muchas ventas 
+  ventas        Venta[]
 }
 
 model Cliente {
@@ -54,12 +56,13 @@ model Cliente {
   usuarioId Int?
   // Un cliente puede tener muchos pedidos 
   pedidos   Pedido[]
+  // Un cliente puede tener varias ventas 
+  ventas    Venta[]
 }
 
 model Category {
   id        Int       @id @default(autoincrement())
   nombre    String
-  imagen    String?
   createdAt DateTime  @default(now())
   Usuario   Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId Int
@@ -68,19 +71,21 @@ model Category {
 }
 
 model Product {
-  id          Int                 @id @default(autoincrement())
-  titulo      String
-  precio      Float               @default(0.00)
-  stock       Int                 @default(0)
-  imagen      String?
-  color       String
-  description String
-  Usuario     Usuario             @relation(fields: [usuarioId], references: [id])
-  usuarioId   Int
-  Category    Category            @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  id         Int                 @id @default(autoincrement())
+  titulo     String
+  precio     Float               @default(0.00)
+  costo      Float               @default(0.00)
+  stock      Int                 @default(0)
+  color      String
+  Usuario    Usuario             @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  Category   Category            @relation(fields: [categoryId], references: [id])
+  categoryId Int
   // Un producto puede pertenecer a varios pedidos 
-  pedidos     ProductosEnPedido[]
+  pedidos    ProductosEnPedido[]
+  // Un producto puede pertenecer a varias ventas 
+
+  ProductosEnVenta ProductosEnVenta[]
 }
 
 model Pedido {
@@ -95,8 +100,8 @@ model Pedido {
   status        StatusPedido        @default(pending)
   totalPrice    Float
   totalProducts Int
-  nota String?
-  metodoPago MetodoPago @default(MercadoPago)
+  nota          String?
+  metodoPago    MetodoPago          @default(MercadoPago)
 }
 
 // Tabla intermedia entre productos y pedidos
@@ -106,8 +111,34 @@ model ProductosEnPedido {
   pedidoId  Int
   product   Product @relation(fields: [productId], references: [id])
   productId Int
-  cantidad  Int @default(1)
-  @@unique([pedidoId,productId]) //evitar duplicados del mismo producto
+  cantidad  Int     @default(1)
+
+  @@unique([pedidoId, productId]) //evitar duplicados del mismo producto
+}
+
+model Venta {
+  id          Int        @id @default(autoincrement())
+  Usuario     Usuario    @relation(fields: [usuarioId], references: [id])
+  usuarioId   Int
+  Cliente     Cliente    @relation(fields: [clienteId], references: [id])
+  clienteId   Int
+  precioTotal Float
+  ganancias   Float?
+  fecha       DateTime
+  metodoPago  MetodoPago
+  // Una venta puede tener varios productos 
+  ProductosEnVenta ProductosEnVenta[]
+}
+
+model ProductosEnVenta {
+  id        Int     @id @default(autoincrement())
+  venta     Venta   @relation(fields: [ventaId], references: [id])
+  ventaId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  cantidad  Int     @default(1)
+
+  @@unique([ventaId, productId]) // Evita duplicados del mismo producto en una venta
 }
 
 enum Role {
@@ -125,6 +156,7 @@ enum StatusPedido {
   inProgress
   completed
 }
+
 enum MetodoPago {
   TarjetaCredito
   TarjetaDebito

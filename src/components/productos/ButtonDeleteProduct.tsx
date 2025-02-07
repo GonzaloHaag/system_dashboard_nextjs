@@ -2,10 +2,10 @@
 import { deleteProductWithId } from "@/actions";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
-export const ButtonDeleteProduct = ({ productId,productImage }: { productId: number,productImage:string | null }) => {
+export const ButtonDeleteProduct = ({ productId }: { productId: number }) => {
 
     const clickDeleteProduct = async () => {
-        const respuesta = await deleteProductWithId(productId,productImage);
+        const respuesta = await deleteProductWithId(productId);
         if (!respuesta.ok) {
             toast.error(respuesta.message);
             return;

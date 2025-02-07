@@ -5,7 +5,6 @@ import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
 import { FormatoMoneda } from "@/lib/FormatoMoneda";
 import { ButtonDeleteProduct } from "./ButtonDeleteProduct";
 import { Pagination } from "../Pagination";
-import Image from "next/image";
 interface Props {
     userId: number;
     searchQuery: string;
@@ -29,6 +28,9 @@ export const TableProducts = async ({ userId, searchQuery, page }: Props) => {
                                 Titulo
                             </th>
                             <th scope="col" className="px-6 py-3">
+                                Costo
+                            </th>
+                            <th scope="col" className="px-6 py-3">
                                 Precio
                             </th>
                             <th scope="col" className="px-6 py-3">
@@ -39,9 +41,6 @@ export const TableProducts = async ({ userId, searchQuery, page }: Props) => {
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Color
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Imagen
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Acciones
@@ -57,6 +56,9 @@ export const TableProducts = async ({ userId, searchQuery, page }: Props) => {
                                             {capitalizeFirstLetter(product.titulo)}
                                         </th>
                                         <td className="px-6 py-4">
+                                            {FormatoMoneda(product.costo)}
+                                        </td>
+                                        <td className="px-6 py-4">
                                             {FormatoMoneda(product.precio)}
                                         </td>
                                         <td className='px-6 py-4'>
@@ -69,12 +71,9 @@ export const TableProducts = async ({ userId, searchQuery, page }: Props) => {
                                             <div className='w-6 h-6 rounded-full' style={{ backgroundColor: product.color }}></div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <Image src={product.imagen ? product.imagen : '/images/placeholder.webp'} alt="Imagen del producto" width={45} height={45} className="aspect-video object-cover"/>
-                                        </td>
-                                        <td className="px-6 py-4">
                                             <div className="flex items-center gap-x-4">
                                                 <ButtonEdit basePath="productos/editar-producto" id={product.id} />
-                                                <ButtonDeleteProduct productId={product.id} productImage={ product.imagen } />
+                                                <ButtonDeleteProduct productId={product.id} />
                                             </div>
                                         </td>
                                     </tr>

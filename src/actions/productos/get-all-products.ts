@@ -14,10 +14,10 @@ export const getAllProducts = async (userId: number, searchQuery: string,page=1,
             select: {
                 id: true,
                 titulo: true,
+                costo:true,
                 precio: true,
                 stock: true,
                 color:true,
-                imagen: true,
                 Category: {
                     select: {
                         nombre: true
@@ -54,9 +54,9 @@ export const getAllProducts = async (userId: number, searchQuery: string,page=1,
                 id: true,
                 titulo: true,
                 precio: true,
+                costo:true,
                 stock: true,
                 color:true,
-                imagen: true,
                 Category: {
                     select: {
                         nombre: true

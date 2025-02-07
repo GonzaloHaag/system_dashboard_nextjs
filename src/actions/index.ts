@@ -24,3 +24,7 @@ export { updatePedidoStatus } from './pedidos/update-status-pedido';
 export { getAllPedidos } from './pedidos/get-all-pedidos';
 export { getFieldsPedidos } from './pedidos/get-fields-pedidos';
 export { deletePedidoWithId } from './pedidos/delete-pedido';
+
+export { createVentaWithPedidoId } from './ventas/create-venta-with-pedidoid';
+export { getAllVentas } from './ventas/get-all-ventas';
+export { deleteVentaWithId } from './ventas/delete-venta';
