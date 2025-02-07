@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { uploadImage } from "../upload-image";
 
 export const editCategoryWithId = async(userId:number,categoryId:number,nombre:string) => {
     try {

@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 export const deleteClientWithId = async (clientId: number) => {
     try {
 
-
         // Verificar que no este en un pedido
         const relatedPedido = await prisma.pedido.findMany({
             where: {
@@ -14,10 +13,23 @@ export const deleteClientWithId = async (clientId: number) => {
             }
         });
 
+        // Verificar que no este en una venta 
+        const relatedVentas = await prisma.venta.findMany({
+            where : {
+                clienteId:clientId
+            }
+        });
+
         if (relatedPedido.length > 0) {
             return {
                 ok: false,
                 message: 'El cliente no se puede eliminar porque se encuentra en un pedido'
+            }
+        }
+        if(relatedVentas.length > 0) {
+            return {
+                ok:false,
+                message:'El cliente no se puede eliminar porque se encuentra en una venta'
             }
         }
 

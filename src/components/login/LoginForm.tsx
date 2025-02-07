@@ -10,7 +10,7 @@ type Inputs =  {
 }
 export const LoginForm = () => {
 
-  const { register, handleSubmit, reset,formState:{ isValid,isSubmitting }} = useForm<Inputs>();
+  const { register, handleSubmit,formState:{ isValid,isSubmitting }} = useForm<Inputs>();
   const router = useRouter();
   const formLoginOnSubmit:SubmitHandler<Inputs> = async (data) => {
     if(!isValid) return;

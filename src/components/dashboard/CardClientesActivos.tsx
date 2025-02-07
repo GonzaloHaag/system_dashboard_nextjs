@@ -11,28 +11,27 @@ export const CardClientesActivos = ({ userId }: { userId: number }) => {
 
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const fetchClientsActivos = async () => {
-        try {
-            setIsLoading(true);
-            const response = await getTotalCountClientsActive(userId);
-            if (!response.ok) {
-                toast.error(response.message);
-                return;
-            }
-
-            setTotalCount(response.totalCount || 0)
-
-        } catch (error) {
-            console.error(error);
-        }
-        finally {
-            setIsLoading(false);
-        }
-    }
-
     useEffect(() => {
+        const fetchClientsActivos = async () => {
+            try {
+                setIsLoading(true);
+                const response = await getTotalCountClientsActive(userId);
+                if (!response.ok) {
+                    toast.error(response.message);
+                    return;
+                }
+    
+                setTotalCount(response.totalCount || 0)
+    
+            } catch (error) {
+                console.error(error);
+            }
+            finally {
+                setIsLoading(false);
+            }
+        }
         fetchClientsActivos();
-    }, [])
+    }, [userId])
     return (
         <div className="bg-neutral-100 p-6 flex flex-col gap-y-6 shadow-md rounded fadeIn group hover:bg-neutral-900 transition-colors duration-200">
             <div className="flex items-center justify-between">

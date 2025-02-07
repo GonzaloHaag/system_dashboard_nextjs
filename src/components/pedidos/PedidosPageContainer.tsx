@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd";
 import { Pedido, StatusPedido } from "@/interfaces";
 import { PedidoItem } from "./PedidoItem";
-import { createVentaWithPedidoId, deletePedidoWithId, updatePedidoStatus } from "@/actions";
+import { createVentaWithPedidoId, updatePedidoStatus } from "@/actions";
 import { toast } from "sonner";
 
 type Column = {
@@ -108,16 +108,7 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
                 });
                 return;
             }
-            toast.success(ventaResponse.message);
-            // setTimeout(async () => {
-            //     const deleteResponse = await deletePedidoWithId(movedPedido.id);
-            //     if (!deleteResponse.ok) {
-            //         toast.error(deleteResponse.message);
-            //         return;
-            //     }
-            //     toast.success("Se eliminaron los pedidos completados!");
-            // }, 1 * 60 * 1000); // 1 minuto
-            
+            toast.success(ventaResponse.message); 
         }
 
         // Aquí actualizarías el estado en el backend si todo va bien

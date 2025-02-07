@@ -1,8 +1,5 @@
 'use client';
-
-import { useState, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import Image from "next/image";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
@@ -18,14 +15,13 @@ interface CategoryInputs {
 }
 
 export const FormAddCategory = ({ userId }: Props) => {
-    const { handleSubmit, register, formState: { isValid, isSubmitting }, watch } = useForm<CategoryInputs>({
+    const { handleSubmit, register, formState: { isValid, isSubmitting } } = useForm<CategoryInputs>({
         defaultValues: {
             nombre: '',
         }
     });
 
     const router = useRouter();
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     const formCategorySubmit: SubmitHandler<CategoryInputs> = async (data) => {
         const respuesta = await addCategory(userId, data.nombre);

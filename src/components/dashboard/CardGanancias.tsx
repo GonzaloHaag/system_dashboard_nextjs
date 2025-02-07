@@ -11,28 +11,29 @@ export const CardGanancias = ({ userId }: { userId: number }) => {
 
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const fetchCountGanancias = async () => {
-        try {
-            setIsLoading(true);
-            const response = await getTotalGanancias(userId);
-            if (!response.ok) {
-                toast.error(response.message);
-                return;
-            }
-
-            setTotalCount(response.total || 0)
-
-        } catch (error) {
-            console.error(error);
-        }
-        finally {
-            setIsLoading(false);
-        }
-    }
+  
 
     useEffect(() => {
+        const fetchCountGanancias = async () => {
+            try {
+                setIsLoading(true);
+                const response = await getTotalGanancias(userId);
+                if (!response.ok) {
+                    toast.error(response.message);
+                    return;
+                }
+    
+                setTotalCount(response.total || 0)
+    
+            } catch (error) {
+                console.error(error);
+            }
+            finally {
+                setIsLoading(false);
+            }
+        }
         fetchCountGanancias();
-    }, [])
+    }, [userId])
     return (
         <div className="bg-neutral-100 p-6 flex flex-col gap-y-6 shadow-md rounded fadeIn group hover:bg-neutral-900 transition-colors duration-200">
             <div className="flex items-center justify-between">

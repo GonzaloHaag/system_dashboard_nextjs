@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { editProductWithId } from "@/actions";
 import { toast } from "sonner";
 import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
-import { Textarea } from "../ui/textarea";
 interface Props {
     userId: number;
     categories: {

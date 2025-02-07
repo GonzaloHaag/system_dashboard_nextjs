@@ -10,10 +10,24 @@ export const deleteProductWithId = async (productId: number) => {
             }
         });
 
+        // Verificar que no este en una venta
+        const relatedVenta = await prisma.productosEnVenta.findMany({
+            where : {
+                productId : productId
+            }
+        });
+
         if (relatedPedido.length > 0) {
             return {
                 ok: false,
                 message: 'El producto no se puedo eliminar porque se encuentra en un pedido'
+            }
+        }
+
+        if(relatedVenta.length > 0) {
+            return {
+                ok:false,
+                message:'El producto no se puede eliminar porque se encuentra en una venta'
             }
         }
         await prisma.product.delete({
