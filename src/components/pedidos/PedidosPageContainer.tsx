@@ -108,7 +108,7 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
                 });
                 return;
             }
-            toast.success(ventaResponse.message); 
+            toast.success(ventaResponse.message);
         }
 
         // Aquí actualizarías el estado en el backend si todo va bien

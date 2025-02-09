@@ -4,6 +4,12 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 export const addProduct = async(userId:number,titulo:string,precio:number,costo:number,stock:number,color:string,categoryId:number) => {
     try {
+        if(precio < costo) {
+            return {
+                ok:false,
+                message:'El costo no puede ser mayor al precio'
+            }
+        }
         await prisma.product.create({
             data : {
                 usuarioId:userId,

@@ -12,6 +12,8 @@ export const ButtonViewDetailsPedido = ({ pedido }: { pedido: Pedido }) => {
         TarjetaCredito: 'Tarjeta de crédito',
         TarjetaDebito: 'Tarjeta de débito'
     };
+    const fechaEntregaLocal = new Date(pedido.fechaEntrega);
+    fechaEntregaLocal.setMinutes(fechaEntregaLocal.getMinutes() + fechaEntregaLocal.getTimezoneOffset());
     return (
         <Dialog>
             <DialogTrigger asChild>

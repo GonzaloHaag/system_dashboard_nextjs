@@ -16,6 +16,12 @@ export const editProductWithId = async (userId: number, productId: number, titul
                 message: 'El producto no existe'
             }
         }
+        if(precio < costo) {
+            return {
+                ok:false,
+                message:'El costo no puede ser mayor al precio'
+            }
+        }
         await prisma.product.update({
             where: {
                 id: productId

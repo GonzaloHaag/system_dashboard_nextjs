@@ -25,6 +25,7 @@ export { SalesChart } from './dashboard/SalesChart';
 export { WinningsChart } from './dashboard/WinningsChart';
 export { TableOrders } from './dashboard/TableOrders';
 export { SkeletonTableOrders } from './dashboard/SkeletonTableOrders';
+export { CardsContainer } from './dashboard/CardsContainer';
 /** Productos */
 export { FormAddProduct } from './productos/FormAddProduct';
 export { TableProducts } from './productos/TableProducts';

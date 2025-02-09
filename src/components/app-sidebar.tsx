@@ -5,6 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupConte
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavUser } from "./nav-user";
+import Image from "next/image";
 
 const items = [
     {
@@ -51,7 +52,9 @@ export function AppSideBar() {
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
-                Logo
+                <div className="flex items-center gap-x-2">
+                    <Image src={'/images/logo_pocho.webp'} alt="logo pocho mates" width={40} height={40} />
+                </div>
             </SidebarHeader>
 
             <SidebarContent>

@@ -59,31 +59,37 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
                     <tbody>
                         {
                             ventas && ventas.length > 0 ? (
-                                ventas.map((venta) => (
-                                    <tr key={venta.id} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                            #{venta.id}
-                                        </th>
-                                        <td className="px-6 py-4">
-                                            {capitalizeFirstLetter(venta.Cliente.nombre)}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {[metodoPagoLabel[venta.metodoPago]]}
-                                        </td>
-                                        <td className='px-6 py-4'>
-                                            {venta.fecha.toLocaleDateString()}
-                                        </td>
-                                        <td className="px-6 py-4 font-semibold">
-                                            {FormatoMoneda(venta.precioTotal)}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-x-4">
-                                                <ButtonEdit basePath="ventas/editar-venta" id={venta.id} />
-                                                <ButtonDeleteVenta ventaId={venta.id} />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
+                                ventas.map((venta) => {
+                                    // Ajusta la fecha de la venta a la zona horaria local
+                                    const fechaLocal = new Date(venta.fecha);
+                                    fechaLocal.setMinutes(fechaLocal.getMinutes() + fechaLocal.getTimezoneOffset());
+
+                                    return (
+                                        <tr key={venta.id} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50">
+                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                                #{venta.id}
+                                            </th>
+                                            <td className="px-6 py-4">
+                                                {capitalizeFirstLetter(venta.Cliente.nombre)}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {[metodoPagoLabel[venta.metodoPago]]}
+                                            </td>
+                                            <td className='px-6 py-4'>
+                                                {fechaLocal.toLocaleDateString()} {/* Muestra la fecha ajustada */}
+                                            </td>
+                                            <td className="px-6 py-4 font-semibold">
+                                                {FormatoMoneda(venta.precioTotal)}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-x-4">
+                                                    <ButtonEdit basePath="ventas/editar-venta" id={venta.id} />
+                                                    <ButtonDeleteVenta ventaId={venta.id} />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
 
                             )
                                 :

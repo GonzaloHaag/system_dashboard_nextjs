@@ -1,7 +1,6 @@
 
 'use client';
 import Link from 'next/link';
-import clsx from 'clsx';
 import { redirect, usePathname, useSearchParams } from 'next/navigation';
 import { generatePaginationNumbers } from '@/lib/generatePaginationNumbers';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
@@ -69,20 +68,9 @@ export const Pagination = ({ totalPages }: Props) => {
 
                     {
                         allPages.map((page) => (
-
                             <li key={page} className="page-item">
-                                <Link
-                                    className={
-                                        clsx(
-                                            "page-link relative block py-1.5 px-3 border-0 outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none",
-                                            {
-                                                'bg-blue-600 shadow-sm text-white hover:text-white hover:bg-blue-900': page === currentPage
-                                            }
-                                        )
-                                    }
-                                    href={createPageUrl(page)}
-                                >
-                                    {page}
+                                <Link href={createPageUrl(page)} className={`page-link relative block py-1.5 px-3 border-0 outline-none transition-all duration-200 rounded focus:shadow-none ${page === currentPage ? 'bg-blue-600 shadow-sm text-white hover:text-white hover:bg-blue-900' : 'text-gray-800 hover:text-gray-800 hover:bg-gray-200'}`}>
+                                   {page}
                                 </Link>
                             </li>
 

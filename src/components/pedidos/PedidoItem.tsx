@@ -16,10 +16,12 @@ export const PedidoItem = ({ pedido }: { pedido: Pedido }) => {
         inProgress: 'En progreso',
         completed: 'Completado',
     };
+    const fechaEntregaLocal = new Date(pedido.fechaEntrega);
+    fechaEntregaLocal.setMinutes(fechaEntregaLocal.getMinutes() + fechaEntregaLocal.getTimezoneOffset());
     return (
         <Card className="relative">
             <div className="flex items-center gap-x-2 absolute right-2 top-2 z-10">
-                <ButtonViewDetailsPedido pedido={ pedido } />
+                <ButtonViewDetailsPedido pedido={pedido} />
                 <ButtonDeletePedido pedidoId={pedido.id} />
             </div>
 
@@ -34,7 +36,7 @@ export const PedidoItem = ({ pedido }: { pedido: Pedido }) => {
                     <span className={pedido.status === 'completed' ? 'text-green-500' : ''}><strong className="font-medium text-neutral-900">Estado:</strong> {statusLabel[pedido.status]}</span>
                     <div className="flex items-center gap-x-1">
                         <CalendarIcon size={16} className="text-gray-500" />
-                        <span className="text-xs text-gray-500">{pedido.fechaEntrega.toLocaleDateString()}</span>
+                        <span className="text-xs text-gray-500">{fechaEntregaLocal.toLocaleDateString()}</span>
                     </div>
                 </div>
             </CardContent>
