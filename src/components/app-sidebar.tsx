@@ -53,7 +53,7 @@ export function AppSideBar() {
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <div className="flex items-center gap-x-2">
-                    <Image src={'/images/logo_pocho.webp'} alt="logo pocho mates" width={40} height={40} />
+                    <Image src={'/images/logo_pocho.webp'} alt="logo pocho mates" width={40} height={40} className="aspect-square" />
                 </div>
             </SidebarHeader>
 

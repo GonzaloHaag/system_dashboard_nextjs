@@ -17,15 +17,14 @@ export { TableCategories } from './categorias/TableCategories';
 export { SkeletonTableCategories } from './categorias/SkeletonTableCategories';
 export { ButtonDeleteCategory } from './categorias/ButtonDeleteCategory';
 /** Dashboard */
-export { CardSales } from './dashboard/CardSales';
-export { CardGanancias } from './dashboard/CardGanancias';
-export { CardProductosTotales } from './dashboard/CardProductosTotales';
-export { CardClientesActivos } from './dashboard/CardClientesActivos';
+export { DashboardPageContainer } from './dashboard/DashboardPageContainer';
+export { DashboardPageContainerSkeleton } from './dashboard/DashboardPageContainerSkeleton';
 export { SalesChart } from './dashboard/SalesChart';
 export { WinningsChart } from './dashboard/WinningsChart';
 export { TableOrders } from './dashboard/TableOrders';
 export { SkeletonTableOrders } from './dashboard/SkeletonTableOrders';
-export { CardsContainer } from './dashboard/CardsContainer';
+export { CardDashboard } from './dashboard/CardDashboard';
+export { CardSkeleton } from './dashboard/CardSkeleton';
 /** Productos */
 export { FormAddProduct } from './productos/FormAddProduct';
 export { TableProducts } from './productos/TableProducts';

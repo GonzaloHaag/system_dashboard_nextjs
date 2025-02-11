@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 
 export const getDataAllDashboard = async (userId: number) => {
     try {
-        const [totalCountClientsActive, totalGanancias, totalCountProducts, totalCountSales, ventasPorMes, gananciasPorMes] = await Promise.all([
+        const [totalCountClientsActive, totalGanancias, totalCountProducts, totalSalesPrice, ventasPorMes, gananciasPorMes] = await Promise.all([
             prisma.cliente.count({
                 where: {
                     usuarioId: userId,
@@ -27,9 +27,12 @@ export const getDataAllDashboard = async (userId: number) => {
                     usuarioId: userId
                 }
             }),
-            prisma.venta.count({
-                where: {
-                    usuarioId: userId
+            prisma.venta.aggregate({
+                where : {
+                    usuarioId:userId
+                },
+                _sum : {
+                    precioTotal:true
                 }
             }),
             prisma.venta.groupBy({
@@ -37,8 +40,8 @@ export const getDataAllDashboard = async (userId: number) => {
                 where: {
                     usuarioId: userId,
                 },
-                _count: {
-                    id: true, // Contar el número de ventas
+                _sum: {
+                    precioTotal:true // Sumo precio total de ventas
                 },
                 orderBy: {
                     fecha: 'asc',
@@ -65,7 +68,7 @@ export const getDataAllDashboard = async (userId: number) => {
             if (!acc[mes]) {
                 acc[mes] = 0;
             }
-            acc[mes] += venta._count.id; // Sumar el número de ventas
+            acc[mes] += venta._sum.precioTotal || 0; // Sumar precio total de ventas
             return acc;
         }, {} as Record<string, number>);
 
@@ -97,7 +100,7 @@ export const getDataAllDashboard = async (userId: number) => {
             totalCountClientsActive,
             totalGanancias: totalGanancias._sum.ganancias,
             totalCountProducts,
-            totalCountSales,
+            totalSalesPrice:totalSalesPrice._sum.precioTotal,
             data,
             dataGananciasPorMes
         }
