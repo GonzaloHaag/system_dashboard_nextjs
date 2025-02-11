@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 
 
-export const getAllClients = async(userId:number,searchQuery:string,page=1,take=12) => {
+export const getAllClients = async(userId:number,searchQuery:string,page=1,take=10) => {
 
     if(isNaN(Number(page))) page=1;
     if(page<1) page = 1;

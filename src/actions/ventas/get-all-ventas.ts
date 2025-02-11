@@ -16,10 +16,23 @@ export const getAllVentas = async (userId: number, searchQuery: string, page = 1
                     select: {
                         nombre: true
                     }
+                },
+                ProductosEnVenta: {
+                    select: {
+                        id: true,
+                        cantidad: true,
+                        product: {
+                            select: {
+                                precio: true,
+                                costo: true,
+                                titulo: true
+                            }
+                        }
+                    }
                 }
             },
             orderBy: {
-               id:'asc'
+                id: 'asc'
             },
             take: take,
             skip: (page - 1) * take
@@ -38,10 +51,23 @@ export const getAllVentas = async (userId: number, searchQuery: string, page = 1
                     select: {
                         nombre: true
                     }
+                },
+                ProductosEnVenta: {
+                    select: {
+                        id: true,
+                        cantidad: true,
+                        product: {
+                            select: {
+                                precio: true,
+                                costo: true,
+                                titulo: true
+                            }
+                        }
+                    }
                 }
             },
             orderBy: {
-                id:'asc'
+                id: 'asc'
             },
 
         });
@@ -51,12 +77,21 @@ export const getAllVentas = async (userId: number, searchQuery: string, page = 1
                 usuarioId: userId
             }
         });
+        const totalPriceVentas = await prisma.venta.aggregate({
+            where : {
+                usuarioId:userId
+            },
+            _sum : {
+                precioTotal:true
+            }
+        });
         const totalPages = Math.ceil(totalCount / take);
         return {
             ok: true,
             message: 'Ventas encontradas',
             totalPages,
-            ventas
+            ventas,
+            totalPriceVentas : totalPriceVentas._sum.precioTotal
         }
 
     } catch (error) {

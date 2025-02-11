@@ -5,6 +5,7 @@ import { FormatoMoneda } from "@/lib/FormatoMoneda";
 import { ButtonDeletePedido } from "./ButtonDeletePedido";
 import { ButtonViewDetailsPedido } from "./ButtonViewDetailsPedido";
 import { CalendarIcon } from "lucide-react";
+import { ButtonEdit } from "../ButtonEdit";
 
 export const PedidoItem = ({ pedido }: { pedido: Pedido }) => {
 
@@ -21,6 +22,11 @@ export const PedidoItem = ({ pedido }: { pedido: Pedido }) => {
     return (
         <Card className="relative">
             <div className="flex items-center gap-x-2 absolute right-2 top-2 z-10">
+                {
+                    pedido.status !== 'completed' && (
+                        <ButtonEdit id={pedido.id} basePath="pedidos/editar-pedido" className="size-5" />
+                    )
+                }
                 <ButtonViewDetailsPedido pedido={pedido} />
                 <ButtonDeletePedido pedidoId={pedido.id} />
             </div>

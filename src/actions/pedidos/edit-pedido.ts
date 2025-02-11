@@ -1,12 +1,8 @@
 'use server';
-
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { createVentaWithPedidoId } from "../ventas/create-venta-with-pedidoid";
-
-
-interface AddPedidoProps {
-    userId: number;
+interface EditPedidoProps {
+    pedidoId:number;
     clienteId: number;
     ordersItems: { productId: number, quantity: number }[];
     estado: 'pending' | 'inProgress' | 'completed';
@@ -14,11 +10,10 @@ interface AddPedidoProps {
     nota: string;
     metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia'
 }
-
-export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaEntrega, nota, metodoPago }: AddPedidoProps) => {
+export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fechaEntrega, nota, metodoPago }: EditPedidoProps) => {
     try {
-
         const productsIds = ordersItems.map((orderItem) => orderItem.productId);
+
         // Verificamos que existan en la DB
         const productsDB = await prisma.product.findMany({
             where: {
@@ -32,6 +27,7 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 stock: true
             }
         });
+
         const stockErrors = ordersItems.some(orderItem => {
             const product = productsDB.find(p => p.id === orderItem.productId);
             return !product || product.stock < orderItem.quantity;
@@ -43,8 +39,12 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 message: 'Uno o más productos no tienen suficiente stock.'
             }
         }
+
         if (productsDB.length !== productsIds.length) {
-            throw new Error("Uno o más productos seleccionados no existen.");
+            return {
+                ok: false,
+                message: 'Uno o más productos seleccionados no existen.'
+            }
         }
 
         const totalPriceOrder = ordersItems.reduce((total, item) => {
@@ -57,11 +57,20 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
 
         const totalProducts = ordersItems.reduce((sum, item) => sum + item.quantity, 0);
 
-        const newPedido = await prisma.pedido.create({
+        // Eliminar los productos actuales del pedido
+        await prisma.productosEnPedido.deleteMany({
+            where: {
+                pedidoId: pedidoId
+            }
+        });
+
+        // Actualizar el pedido con los nuevos productos
+        await prisma.pedido.update({
+            where: {
+                id: pedidoId
+            },
             data: {
-                usuarioId: userId,
                 clienteId: clienteId,
-                //Productos hace referencia a la relacion de productosEnPedido
                 productos: {
                     create: ordersItems.map((orderItem) => ({
                         productId: orderItem.productId,
@@ -74,7 +83,6 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 metodoPago: metodoPago,
                 totalPrice: totalPriceOrder,
                 totalProducts: totalProducts
-
             }
         });
 
@@ -91,22 +99,20 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 }
             }))
         );
-        if(newPedido.status === 'completed') {
-            await createVentaWithPedidoId(newPedido.id);
-        }
+
         revalidatePath('/pedidos');
-        revalidatePath('/productos'); //Por el stock
+        revalidatePath('/productos'); // Por el stock
 
         return {
             ok: true,
-            message: 'Pedido creado correctamente'
+            message: 'Pedido editado correctamente!'
         }
 
     } catch (error) {
         console.error(error);
         return {
             ok: false,
-            message: 'Ocurrió un error al crear el pedido'
+            message: 'Ocurrió un error al editar el pedido'
         }
     }
 }

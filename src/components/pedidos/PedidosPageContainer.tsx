@@ -35,7 +35,6 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
         },
     ]);
 
-    // useEffect para sincronizar columns con initialPedidos
     useEffect(() => {
         setColumns([
             {
@@ -71,10 +70,9 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
 
         const [movedPedido] = sourcePedidos.splice(source.index, 1);
 
-        // Si el destino es la misma columna "Completados" y ya contiene el pedido, no lo muevas
         if (destColumn.id === "completed" && destPedidos.some((p) => p.id === movedPedido.id)) {
             toast.error("El pedido ya está en la columna Completados.");
-            return; // No hacer nada si el pedido ya está allí
+            return;
         }
 
         destPedidos.splice(destination.index, 0, { ...movedPedido, status: destColumn.id as Pedido["status"] });
@@ -111,7 +109,6 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
             toast.success(ventaResponse.message);
         }
 
-        // Aquí actualizarías el estado en el backend si todo va bien
         const respuesta = await updatePedidoStatus(movedPedido.id, destColumn.id as StatusPedido);
         if (!respuesta.ok) {
             toast.error(respuesta.message);
@@ -145,7 +142,7 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
                                             key={pedido.id}
                                             draggableId={pedido.id.toString()}
                                             index={index}
-                                            isDragDisabled={column.id === "completed"} // Deshabilitar drag en columna Completados
+                                            isDragDisabled={column.id === "completed"}
                                         >
                                             {(provided, snapshot) => (
                                                 <li

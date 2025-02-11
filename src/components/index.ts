@@ -33,6 +33,7 @@ export { FormEditProduct } from './productos/FormEditProduct';
 export { ButtonDeleteProduct } from './productos/ButtonDeleteProduct';
 /** Pedidos */
 export { FormAddPedido } from './pedidos/FormAddPedido';
+export { FormEditPedido } from './pedidos/FormEditPedido';
 export { PedidosPageContainer } from './pedidos/PedidosPageContainer';
 export { PedidosFetcher } from './pedidos/PedidosFetcher';
 export { PedidosFetcherSkeleton } from './pedidos/PedidosFetcherSkeleton';
@@ -42,4 +43,5 @@ export { ButtonViewDetailsPedido } from './pedidos/ButtonViewDetailsPedido';
 /** Ventas */
 export { TableVentas } from './ventas/TableVentas';
 export { SkeletonTableVentas } from './ventas/SkeletonTableVentas';
-export { ButtonDeleteVenta } from './ventas/ButtonDeleteVenta';
+export { ButtonDeleteVenta  } from './ventas/ButtonDeleteVenta';
+export { ButtonViewVenta } from './ventas/ButtonViewVenta';

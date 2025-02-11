@@ -9,7 +9,7 @@ export const metadata:Metadata = {
     title:'Editar producto'
 }
 
-export default async function EditarProductoPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditarProductoModalPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await auth();
     if (!session?.user) {
         redirect('/login')

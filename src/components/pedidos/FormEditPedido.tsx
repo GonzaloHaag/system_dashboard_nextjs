@@ -1,20 +1,19 @@
 'use client';
-
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from 'react-select';
 import { SelectContent, SelectGroup, SelectItem, Select as SelectShadcn, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { addPedido } from "@/actions";
 import { toast } from "sonner";
 import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
 import { useState } from "react";
 import { Trash2Icon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
+import { editPedido } from "@/actions";
+import { MetodoPago, StatusPedido } from "@/interfaces/pedido";
 
 interface Props {
-    userId: number;
     clientes: {
         id: number;
         nombre: string;
@@ -25,10 +24,39 @@ interface Props {
         stock: number;
         color: string;
     }[];
+    pedidoExistente: {
+        productos: {
+            id: number;
+            cantidad: number;
+            product: {
+                id: number;
+                titulo: string;
+                precio: number;
+                color: string;
+                costo: number;
+                stock: number;
+            };
+        }[];
+        Cliente: {
+            nombre: string;
+            id: number;
+            ciudad: string;
+            direccion: string | null;
+        };
+        fechaEntrega: Date;
+        nota: string | null;
+        metodoPago: MetodoPago;
+        clienteId: number;
+        id: number;
+        status: StatusPedido;
+        usuarioId: number;
+        createdAt: Date;
+        totalPrice: number;
+        totalProducts: number;
+    }
 }
-
 type InputsPedido = {
-    clienteType: { label: string, value: number }
+    clienteType: { label: string, value: number };
     fechaEntrega: string;
     estado: 'pending' | 'inProgress' | 'completed';
     productos: number[];
@@ -36,17 +64,26 @@ type InputsPedido = {
     metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia';
 }
 
-export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
+export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) => {
     const router = useRouter();
+    const fechaEntrega = new Date(pedidoExistente.fechaEntrega).toISOString().split("T")[0];
     const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsPedido>({
         defaultValues: {
-            estado: 'pending',
-            nota: '',
-            metodoPago: 'MercadoPago'
+            clienteType: { label: pedidoExistente.Cliente.nombre, value: pedidoExistente.Cliente.id },
+            fechaEntrega: fechaEntrega,
+            estado: pedidoExistente.status,
+            productos: pedidoExistente.productos.map((p) => p.id),
+            nota: pedidoExistente.nota || undefined,
+            metodoPago: pedidoExistente.metodoPago
         }
     });
 
-    const [orderItems, setOrderItems] = useState<{ productId: number, quantity: number }[]>([]);
+    const initialOrderItems: { productId: number, quantity: number }[] = pedidoExistente.productos.map((p) => ({
+        productId: p.product.id,
+        quantity: p.cantidad
+    }));
+
+    const [orderItems, setOrderItems] = useState<{ productId: number, quantity: number }[]>(initialOrderItems);
 
     const buttonAddProduct = () => {
         if (orderItems.length === productos.length) {
@@ -62,38 +99,33 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
     }
 
     const updateOrderItem = (index: number, productId: number, productQuantity: number) => {
-        // Verificar si el producto está seleccionado
         if (productId === 0) {
             toast.error('Debes elegir un producto');
             return;
         }
 
-        // Encontrar el producto en la lista de productos
-        const productFind = productos.find((producto) => producto.id === productId);
+        const productFind = productos.find((producto) => producto.id === productId); // ← AHORA COINCIDE CON LOS `productos`
         if (!productFind) {
             toast.error('Producto no encontrado');
             return;
         }
 
-        // Verificar si hay suficiente stock
         if (productFind.stock < productQuantity) {
             toast.warning('No hay suficiente stock');
             return;
         }
 
-        // Actualizar el estado de los productos en el pedido
-        const oldOrdersItems = [...orderItems];
-        oldOrdersItems[index] = { productId: productId, quantity: productQuantity };
-        setOrderItems(oldOrdersItems);
+        const updatedOrderItems = [...orderItems];
+        updatedOrderItems[index] = { productId, quantity: productQuantity };
+        setOrderItems(updatedOrderItems);
     };
 
-    const formAddPedidoSubmit: SubmitHandler<InputsPedido> = async (data) => {
+    const formEditPedidoSubmit: SubmitHandler<InputsPedido> = async (data) => {
         if (orderItems.length === 0) {
             toast.error('Debes agregar al menos un producto');
             return;
         }
 
-        // Verificar stock antes de guardar
         const stockErrors = orderItems.filter(orderItem => {
             const product = productos.find(p => p.id === orderItem.productId);
             return product && product.stock < orderItem.quantity;
@@ -104,8 +136,8 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
             return;
         }
 
-        const respuesta = await addPedido({
-            userId: userId,
+        const respuesta = await editPedido({
+            pedidoId: pedidoExistente.id,
             clienteId: data.clienteType.value,
             ordersItems: orderItems,
             estado: data.estado,
@@ -129,24 +161,30 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
         label: capitalizeFirstLetter(cliente.nombre),
         value: cliente.id
     }));
-    const availableProductsOptions = productos
-        .filter((producto) => !orderItems.some((orderItem) => orderItem.productId === producto.id))
-        .map((producto) => ({
-            label: producto.titulo, // Usar solo el texto para evitar el error
-            value: producto.id,
-            color: producto.color, // Agregar el color como dato extra
-            stock: producto.stock
-        }));
+
+    const availableProductsOptions = productos.map((producto) => ({
+        label: producto.titulo,
+        value: producto.id,
+        color: producto.color,
+        stock: producto.stock
+    }));
+
+    const defaultValueProductsOptions = pedidoExistente.productos.map((product) => ({
+        label: product.product.titulo,
+        value: product.id,
+        color: product.product.color, // Agregar el color como dato extra
+        stock: product.product.stock
+    }))
 
     return (
-        <form onSubmit={handleSubmit(formAddPedidoSubmit)} className="form_class_global">
-
+        <form onSubmit={handleSubmit(formEditPedidoSubmit)} className="form_class_global">
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="cliente">Cliente*</label>
                 <Controller
                     name="clienteType"
                     control={control}
                     rules={{ required: true }}
+                    defaultValue={{ label: pedidoExistente.Cliente.nombre, value: pedidoExistente.Cliente.id }}
                     render={({ field }) => (
                         <Select
                             id="cliente"
@@ -161,6 +199,7 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                     )}
                 />
             </div>
+
             <div className="flex flex-col items-start gap-y-2">
                 <label>Productos*</label>
                 {
@@ -171,6 +210,7 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                                 required
                                 className="w-full col-span-6 focus:outline-neutral-900"
                                 placeholder='Seleccionar producto'
+                                defaultValue={defaultValueProductsOptions}
                                 value={availableProductsOptions.find((product) => product.value === orderItem.productId)}
                                 onChange={(selectedOption) => updateOrderItem(index, selectedOption?.value || 0, orderItem.quantity)}
                                 noOptionsMessage={() => 'No se encontraron resultados'}
@@ -204,13 +244,14 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                     Agregar producto
                 </Button>
             </div>
+
             <div className="grid grid-cols-2 gap-x-8">
                 <div className="flex flex-col items-start gap-y-2">
                     <label htmlFor="estado">Estado*</label>
                     <Controller
                         name="estado"
                         control={control}
-                        defaultValue="pending"
+                        defaultValue={pedidoExistente.status}
                         render={({ field }) => (
                             <SelectShadcn value={field.value} onValueChange={field.onChange}>
                                 <SelectTrigger className="w-full">
@@ -229,9 +270,10 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                 </div>
                 <div className="flex flex-col items-start gap-y-2">
                     <label htmlFor="fecha_entrega">Fecha de entrega *</label>
-                    <Input type="date" id="fecha_entrega" required {...register('fechaEntrega', { required: true })} />
+                    <Input type="date" id="fecha_entrega" defaultValue={fechaEntrega} required {...register('fechaEntrega', { required: true })} />
                 </div>
             </div>
+
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="metodoPago">Método de pago*</label>
                 <Controller
@@ -256,9 +298,10 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                     )}
                 />
             </div>
+
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="nota">Nota</label>
-                <Textarea {...register('nota', { required: false })} placeholder="Agregá una nota para el pedido" />
+                <Textarea defaultValue={pedidoExistente.nota || undefined} {...register('nota', { required: false })} placeholder="Agregá una nota para el pedido" />
             </div>
 
             <div className="flex items-center gap-x-4 justify-end">
@@ -270,5 +313,5 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                 </Button>
             </div>
         </form>
-    )
-}
+    );
+};

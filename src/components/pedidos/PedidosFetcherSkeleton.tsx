@@ -1,3 +1,4 @@
+import { Skeleton } from "../ui/skeleton"
 
 export const PedidosFetcherSkeleton = () => {
     return (
@@ -9,6 +10,7 @@ export const PedidosFetcherSkeleton = () => {
 
                     </div>
                 </div>
+                <Skeleton className="w-full h-[200px] mt-2" />
             </div>
             <div className="p-2">
                 <div className="flex items-center gap-x-2 justify-center">
@@ -17,6 +19,7 @@ export const PedidosFetcherSkeleton = () => {
 
                     </div>
                 </div>
+                <Skeleton className="w-full h-[200px] mt-2" />
             </div>
             <div className="p-2">
                 <div className="flex items-center gap-x-2 justify-center">
@@ -25,6 +28,7 @@ export const PedidosFetcherSkeleton = () => {
 
                     </div>
                 </div>
+                <Skeleton className="w-full h-[200px] mt-2" />
             </div>
         </div>
 

@@ -15,7 +15,7 @@ export const DashboardPageContainer = async ({ userId }: { userId: number }) => 
         <section className="w-full flex flex-col gap-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 <Suspense fallback={<CardSkeleton Icon={ShoppingBagIcon} title="Ventas totales" />}>
-                    <CardDashboard Icon={ShoppingBagIcon} title="Ventas totales" price={responseDashboard.totalSalesPrice} />
+                    <CardDashboard Icon={ShoppingBagIcon} title="Ventas totales" price={responseDashboard.totalSalesPrice || 0} />
                 </Suspense>
                 <Suspense fallback={<CardSkeleton Icon={BadgeDollarSignIcon} title="Total recaudado" />}>
                     <CardDashboard Icon={BadgeDollarSignIcon} title="Total recaudado" price={responseDashboard.totalGanancias || 0} />
@@ -30,11 +30,11 @@ export const DashboardPageContainer = async ({ userId }: { userId: number }) => 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div className="flex flex-col gap-y-2">
                     <h2 className="text-neutral-900 font-medium text-lg text-center">Ventas totales</h2>
-                    <SalesChart userId={userId} />
+                    <SalesChart data={responseDashboard.data || []} />
                 </div>
                 <div className="flex flex-col gap-y-2">
                     <h2 className="text-neutral-900 font-medium text-lg text-center">Ganancias totales</h2>
-                    <WinningsChart userId={userId} />
+                    <WinningsChart data={ responseDashboard.dataGananciasPorMes || []} />
                 </div>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">

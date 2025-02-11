@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 export const TableOrders = async ({ userId }: { userId: number }) => {
 
-    const respuesta = await getAllPedidos(userId);
+    const respuesta = await getAllPedidos(userId,'');
     if (!respuesta.ok || !respuesta.pedidos) {
         toast.error(respuesta.message);
         return;

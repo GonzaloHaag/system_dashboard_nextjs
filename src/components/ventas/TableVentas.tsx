@@ -5,7 +5,7 @@ import { FormatoMoneda } from "@/lib/FormatoMoneda";
 import { Pagination } from "../Pagination";
 import { MetodoPago } from "@/interfaces/pedido";
 import { ButtonDeleteVenta } from "./ButtonDeleteVenta";
-import { ButtonEdit } from "../ButtonEdit";
+import { ButtonViewVenta } from "./ButtonViewVenta";
 interface Props {
     userId: number;
     searchQuery: string;
@@ -17,7 +17,7 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
     if (!respuesta.ok || !respuesta.ventas) {
         toast.error(respuesta.message)
     }
-    const { ventas, totalPages } = respuesta;
+    const { ventas, totalPages,totalPriceVentas } = respuesta;
 
     const metodoPagoLabel: Record<MetodoPago, string> = {
         Efectivo: 'Efectivo',
@@ -27,9 +27,6 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
         Transferencia: 'Transferencia'
     };
 
-    const totalVentasPrice = ventas?.reduce(
-        (acc, item) => acc + item.precioTotal, 0
-    );
     return (
         <div className="flex flex-col">
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg h-full">
@@ -83,7 +80,7 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-x-4">
-                                                    <ButtonEdit basePath="ventas/editar-venta" id={venta.id} />
+                                                    <ButtonViewVenta venta={ venta } metodoPagoLabel={ metodoPagoLabel }  />
                                                     <ButtonDeleteVenta ventaId={venta.id} />
                                                 </div>
                                             </td>
@@ -111,7 +108,7 @@ export const TableVentas = async ({ userId, searchQuery, page }: Props) => {
                             <td className="px-6 py-4"></td>
                             <td className="px-6 py-4"></td>
                             <td className="px-6 py-4"></td>
-                            <td className="px-6 py-4 text-green-500 font-semibold">{FormatoMoneda(totalVentasPrice ?? 0)}</td>
+                            <td className="px-6 py-4 text-green-500 font-semibold">{FormatoMoneda(totalPriceVentas ?? 0)}</td>
                             <td className="px-6 py-4"></td>
                         </tr>
                     </tfoot>
