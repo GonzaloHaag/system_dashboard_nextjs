@@ -23,7 +23,7 @@ export default async function NuevoPedidoModalPage() {
     const { clientes,productos } = respuesta;
     return (
         <Dialog open={true}>
-            <DialogContent>
+            <DialogContent className="w-full sm:min-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>Nuevo pedido</DialogTitle>
                     <DialogDescription>
