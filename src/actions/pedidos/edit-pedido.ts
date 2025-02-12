@@ -1,6 +1,7 @@
 'use server';
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { createVentaWithPedidoId } from "../ventas/create-venta-with-pedidoid";
 interface EditPedidoProps {
     pedidoId:number;
     clienteId: number;
@@ -65,7 +66,7 @@ export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fec
         });
 
         // Actualizar el pedido con los nuevos productos
-        await prisma.pedido.update({
+        const pedidoUpdate = await prisma.pedido.update({
             where: {
                 id: pedidoId
             },
@@ -99,6 +100,9 @@ export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fec
                 }
             }))
         );
+        if(pedidoUpdate.status === 'completed') {
+            await createVentaWithPedidoId(pedidoUpdate.id);
+        }
 
         revalidatePath('/pedidos');
         revalidatePath('/productos'); // Por el stock
