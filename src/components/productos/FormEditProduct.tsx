@@ -41,8 +41,8 @@ export const FormEditProduct = ({ userId, categories, product }: Props) => {
     const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsProduct>({
         defaultValues: {
             titulo: product.titulo,
-            precio: product.precio,
             costo:product.costo,
+            precio: product.precio,
             stock: product.stock,
             categoryType: { label: product.Category.nombre, value: product.Category.id },
             color: product.color,
@@ -54,8 +54,8 @@ export const FormEditProduct = ({ userId, categories, product }: Props) => {
             userId,
             product.id,
             data.titulo,
-            data.precio,
             data.costo,
+            data.precio,
             data.stock,
             data.color,
             data.categoryType.value

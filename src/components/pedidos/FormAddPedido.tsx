@@ -34,6 +34,7 @@ type InputsPedido = {
     productos: number[];
     nota: string;
     metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia';
+    descuento: number;
 }
 
 export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
@@ -42,7 +43,8 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
         defaultValues: {
             estado: 'pending',
             nota: '',
-            metodoPago: 'MercadoPago'
+            metodoPago: 'MercadoPago',
+            descuento: 0
         }
     });
 
@@ -111,7 +113,8 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
             estado: data.estado,
             fechaEntrega: data.fechaEntrega,
             nota: data.nota,
-            metodoPago: data.metodoPago
+            metodoPago: data.metodoPago,
+            descuento:data.descuento
         });
 
         if (!respuesta.ok) {
@@ -140,7 +143,6 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
 
     return (
         <form onSubmit={handleSubmit(formAddPedidoSubmit)} className="form_class_global">
-
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="cliente">Cliente*</label>
                 <Controller
@@ -232,29 +234,45 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                     <Input type="date" id="fecha_entrega" required {...register('fechaEntrega', { required: true })} />
                 </div>
             </div>
-            <div className="flex flex-col items-start gap-y-2">
-                <label htmlFor="metodoPago">Método de pago*</label>
-                <Controller
-                    name="metodoPago"
-                    control={control}
-                    defaultValue="MercadoPago"
-                    render={({ field }) => (
-                        <SelectShadcn value={field.value} onValueChange={field.onChange}>
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Seleccionar método de pago" />
-                            </SelectTrigger>
-                            <SelectContent id="metodoPago">
-                                <SelectGroup>
-                                    <SelectItem value={'MercadoPago'}>Mercado Pago</SelectItem>
-                                    <SelectItem value={'Transferencia'}>Transferencia</SelectItem>
-                                    <SelectItem value={'Efectivo'}>Efectivo</SelectItem>
-                                    <SelectItem value={'TarjetaCredito'}>Crédito</SelectItem>
-                                    <SelectItem value={'TarjetaDebito'}>Débito</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </SelectShadcn>
-                    )}
-                />
+
+            <div className="grid grid-cols-2 gap-x-8">
+                <div className="flex flex-col items-start gap-y-2">
+                    <label htmlFor="descuento">Descuento (%)*</label>
+                    <Input
+                        type="number"
+                        id="descuento"
+                        min={0}
+                        max={100}
+                        defaultValue={0}
+                        required
+                        {...register("descuento", { required: true, min: 0, max: 100 })}
+                        placeholder="0"
+                    />
+                </div>
+                <div className="flex flex-col items-start gap-y-2">
+                    <label htmlFor="metodoPago">Método de pago*</label>
+                    <Controller
+                        name="metodoPago"
+                        control={control}
+                        defaultValue="MercadoPago"
+                        render={({ field }) => (
+                            <SelectShadcn value={field.value} onValueChange={field.onChange}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Seleccionar método de pago" />
+                                </SelectTrigger>
+                                <SelectContent id="metodoPago">
+                                    <SelectGroup>
+                                        <SelectItem value={'MercadoPago'}>Mercado Pago</SelectItem>
+                                        <SelectItem value={'Transferencia'}>Transferencia</SelectItem>
+                                        <SelectItem value={'Efectivo'}>Efectivo</SelectItem>
+                                        <SelectItem value={'TarjetaCredito'}>Crédito</SelectItem>
+                                        <SelectItem value={'TarjetaDebito'}>Débito</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </SelectShadcn>
+                        )}
+                    />
+                </div>
             </div>
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="nota">Nota</label>

@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 
-export const getAllProducts = async (userId: number, searchQuery: string,page=1,take=10) => {
+export const getAllProducts = async (userId: number, searchQuery: string,page=1,take=20) => {
 
     if(isNaN(Number(page))) page=1;
     if(page<1) page = 1;

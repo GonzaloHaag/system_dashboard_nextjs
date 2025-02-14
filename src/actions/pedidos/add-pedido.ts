@@ -12,10 +12,11 @@ interface AddPedidoProps {
     estado: 'pending' | 'inProgress' | 'completed';
     fechaEntrega: string;
     nota: string;
-    metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia'
+    metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia';
+    descuento: number;
 }
 
-export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaEntrega, nota, metodoPago }: AddPedidoProps) => {
+export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaEntrega, nota, metodoPago, descuento }: AddPedidoProps) => {
     try {
 
         const productsIds = ordersItems.map((orderItem) => orderItem.productId);
@@ -54,7 +55,15 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
             }
             return total + (product.precio * item.quantity);
         }, 0);
-
+        // Calcular el descuento
+        if(parseInt(descuento.toString()) && parseInt(descuento.toString()) > 100) {
+            return {
+                ok:false,
+                message:'El descuento no puede ser mayor 100%'
+            }
+        }
+        const discountAmount = (totalPriceOrder * descuento) / 100;
+        const totalPriceWithDiscount = totalPriceOrder - discountAmount;
         const totalProducts = ordersItems.reduce((sum, item) => sum + item.quantity, 0);
 
         const newPedido = await prisma.pedido.create({
@@ -72,7 +81,8 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 fechaEntrega: new Date(fechaEntrega),
                 nota: nota,
                 metodoPago: metodoPago,
-                totalPrice: totalPriceOrder,
+                totalPrice: totalPriceWithDiscount,
+                descuento:parseInt(descuento.toString()),
                 totalProducts: totalProducts
 
             }
@@ -91,7 +101,7 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
                 }
             }))
         );
-        if(newPedido.status === 'completed') {
+        if (newPedido.status === 'completed') {
             await createVentaWithPedidoId(newPedido.id);
         }
         revalidatePath('/pedidos');

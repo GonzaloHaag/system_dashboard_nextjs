@@ -37,8 +37,8 @@ export const FormAddProduct = ({ userId, categories }: Props) => {
         const respuesta = await addProduct(
             userId,
             data.titulo,
-            data.precio,
             data.costo,
+            data.precio,
             data.stock,
             data.color,
             data.categoryType.value

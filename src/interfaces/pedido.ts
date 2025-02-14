@@ -33,6 +33,7 @@ export interface Pedido {
     totalProducts: number;
     nota: string | null;
     metodoPago: MetodoPago;
+    descuento:number;
 }
 export interface Column {
     id: StatusPedido

@@ -9,9 +9,10 @@ interface EditPedidoProps {
     estado: 'pending' | 'inProgress' | 'completed';
     fechaEntrega: string;
     nota: string;
-    metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia'
+    metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia';
+    descuento:number;
 }
-export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fechaEntrega, nota, metodoPago }: EditPedidoProps) => {
+export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fechaEntrega, nota, metodoPago,descuento }: EditPedidoProps) => {
     try {
         const productsIds = ordersItems.map((orderItem) => orderItem.productId);
 
@@ -55,6 +56,15 @@ export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fec
             }
             return total + (product.precio * item.quantity);
         }, 0);
+        // Calcular el descuento
+        if(parseInt(descuento.toString()) && parseInt(descuento.toString()) > 100) {
+            return {
+                ok:false,
+                message:'El descuento no puede ser mayor 100%'
+            }
+        }
+        const discountAmount = (totalPriceOrder * descuento) / 100;
+        const totalPriceWithDiscount = totalPriceOrder - discountAmount;
 
         const totalProducts = ordersItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -82,7 +92,8 @@ export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fec
                 fechaEntrega: new Date(fechaEntrega),
                 nota: nota,
                 metodoPago: metodoPago,
-                totalPrice: totalPriceOrder,
+                totalPrice: totalPriceWithDiscount,
+                descuento:parseInt(descuento.toString()),
                 totalProducts: totalProducts
             }
         });

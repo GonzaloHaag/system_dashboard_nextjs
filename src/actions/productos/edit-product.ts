@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export const editProductWithId = async (userId: number, productId: number, titulo: string, precio: number,costo:number,stock: number, color: string,categoryId: number) => {
+export const editProductWithId = async (userId: number, productId: number, titulo: string, costo:number,precio: number,stock: number, color: string,categoryId: number) => {
     try {
         const product = await prisma.product.findUnique({
             where: {
@@ -16,7 +16,7 @@ export const editProductWithId = async (userId: number, productId: number, titul
                 message: 'El producto no existe'
             }
         }
-        if(precio < costo) {
+        if(parseFloat(costo.toString()) > parseFloat(precio.toString())) {
             return {
                 ok:false,
                 message:'El costo no puede ser mayor al precio'
@@ -29,8 +29,8 @@ export const editProductWithId = async (userId: number, productId: number, titul
             data: {
                 usuarioId: userId,
                 titulo: titulo,
-                precio: parseFloat(precio.toString()),
                 costo:parseFloat(costo.toString()),
+                precio: parseFloat(precio.toString()),
                 stock: parseInt(stock.toString()),
                 color: color,
                 categoryId: categoryId

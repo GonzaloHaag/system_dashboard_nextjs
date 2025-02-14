@@ -22,6 +22,7 @@ interface Props {
         usuarioId: number;
         clienteId: number;
         precioTotal: number;
+        descuento:number;
         ganancias: number | null;
         fecha: Date;
         metodoPago: MetodoPago;
@@ -31,6 +32,8 @@ interface Props {
     metodoPagoLabel: Record<MetodoPago, string>;
 }
 export const ButtonViewVenta = ({ venta, metodoPagoLabel }: Props) => {
+
+    const subTotalSalePrice = venta.ProductosEnVenta.reduce((acc,item) => acc + (item.product.precio * item.cantidad),0)
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -53,7 +56,7 @@ export const ButtonViewVenta = ({ venta, metodoPagoLabel }: Props) => {
                             {
                                 venta.ProductosEnVenta.map((producto, index) => (
                                     <li key={index}>
-                                        {producto.product.titulo} x{producto.cantidad} - {FormatoMoneda(producto.product.precio)}
+                                        {producto.product.titulo} x{producto.cantidad} - {FormatoMoneda(producto.product.precio * producto.cantidad)}
                                     </li>
                                 ))
                             }
@@ -62,6 +65,14 @@ export const ButtonViewVenta = ({ venta, metodoPagoLabel }: Props) => {
                     <div>
                         <h4 className="font-semibold">Método de pago:</h4>
                         <p>{metodoPagoLabel[venta.metodoPago]}</p>
+                    </div>
+                    <div className="flex items-center gap-x-2">
+                        <h4 className="font-semibold">Descuento aplicado:</h4>
+                        <p>{venta.descuento}%</p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold">Subtotal:</h4>
+                        <p>{FormatoMoneda(subTotalSalePrice)}</p>
                     </div>
                     <div>
                         <h4 className="font-semibold">Total:</h4>

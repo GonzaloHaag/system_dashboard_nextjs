@@ -59,6 +59,8 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
             if (!product) throw new Error("Producto no encontrado");
             return total + ((product.precio - product.costo) * item.cantidad);
         }, 0);
+        const discountAmount = (totalGanancias * findPedidoWithId.descuento) / 100;
+        const gananciasWithDiscount = totalGanancias - discountAmount;
 
        await prisma.venta.create({
             data: {
@@ -75,8 +77,8 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
                 fecha:new Date(findPedidoWithId.fechaEntrega),
                 metodoPago:findPedidoWithId.metodoPago,
                 precioTotal: findPedidoWithId.totalPrice,
-                ganancias:totalGanancias
-
+                descuento:findPedidoWithId.descuento,
+                ganancias:gananciasWithDiscount
             }
         });
         revalidatePath('/pedidos');

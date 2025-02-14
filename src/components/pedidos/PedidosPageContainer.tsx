@@ -54,7 +54,7 @@ export const PedidosPageContainer = ({ initialPedidos }: BoardProps) => {
             },
         ]);
     }, [initialPedidos]);
-
+    
     const onDragEnd = async (result: DropResult) => {
         const { source, destination } = result;
         if (!destination) return;

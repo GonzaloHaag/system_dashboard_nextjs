@@ -53,6 +53,7 @@ interface Props {
         createdAt: Date;
         totalPrice: number;
         totalProducts: number;
+        descuento:number;
     }
 }
 type InputsPedido = {
@@ -62,6 +63,7 @@ type InputsPedido = {
     productos: number[];
     nota: string;
     metodoPago: 'TarjetaCredito' | 'TarjetaDebito' | 'MercadoPago' | 'Efectivo' | 'Transferencia';
+    descuento: number;
 }
 
 export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) => {
@@ -74,7 +76,8 @@ export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) 
             estado: pedidoExistente.status,
             productos: pedidoExistente.productos.map((p) => p.id),
             nota: pedidoExistente.nota || undefined,
-            metodoPago: pedidoExistente.metodoPago
+            metodoPago: pedidoExistente.metodoPago,
+            descuento: pedidoExistente.descuento || 0,
         }
     });
 
@@ -143,7 +146,8 @@ export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) 
             estado: data.estado,
             fechaEntrega: data.fechaEntrega,
             nota: data.nota,
-            metodoPago: data.metodoPago
+            metodoPago: data.metodoPago,
+            descuento: data.descuento
         });
 
         if (!respuesta.ok) {
@@ -274,29 +278,44 @@ export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) 
                 </div>
             </div>
 
-            <div className="flex flex-col items-start gap-y-2">
-                <label htmlFor="metodoPago">Método de pago*</label>
-                <Controller
-                    name="metodoPago"
-                    control={control}
-                    defaultValue="MercadoPago"
-                    render={({ field }) => (
-                        <SelectShadcn value={field.value} onValueChange={field.onChange}>
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Seleccionar método de pago" />
-                            </SelectTrigger>
-                            <SelectContent id="metodoPago">
-                                <SelectGroup>
-                                    <SelectItem value={'MercadoPago'}>Mercado Pago</SelectItem>
-                                    <SelectItem value={'Transferencia'}>Transferencia</SelectItem>
-                                    <SelectItem value={'Efectivo'}>Efectivo</SelectItem>
-                                    <SelectItem value={'TarjetaCredito'}>Crédito</SelectItem>
-                                    <SelectItem value={'TarjetaDebito'}>Débito</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </SelectShadcn>
-                    )}
-                />
+            <div className="grid grid-cols-2 gap-x-8">
+                <div className="flex flex-col items-start gap-y-2">
+                    <label htmlFor="descuento">Descuento (%)*</label>
+                    <Input
+                        type="number"
+                        id="descuento"
+                        min={0}
+                        max={100}
+                        defaultValue={pedidoExistente.descuento || 0}
+                        required
+                        {...register("descuento", { required: true, min: 0, max: 100 })}
+                        placeholder="0"
+                    />
+                </div>
+                <div className="flex flex-col items-start gap-y-2">
+                    <label htmlFor="metodoPago">Método de pago*</label>
+                    <Controller
+                        name="metodoPago"
+                        control={control}
+                        defaultValue={pedidoExistente.metodoPago}
+                        render={({ field }) => (
+                            <SelectShadcn value={field.value} onValueChange={field.onChange}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Seleccionar método de pago" />
+                                </SelectTrigger>
+                                <SelectContent id="metodoPago">
+                                    <SelectGroup>
+                                        <SelectItem value={'MercadoPago'}>Mercado Pago</SelectItem>
+                                        <SelectItem value={'Transferencia'}>Transferencia</SelectItem>
+                                        <SelectItem value={'Efectivo'}>Efectivo</SelectItem>
+                                        <SelectItem value={'TarjetaCredito'}>Crédito</SelectItem>
+                                        <SelectItem value={'TarjetaDebito'}>Débito</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </SelectShadcn>
+                        )}
+                    />
+                </div>
             </div>
 
             <div className="flex flex-col items-start gap-y-2">

@@ -102,6 +102,7 @@ model Pedido {
   totalProducts Int
   nota          String?
   metodoPago    MetodoPago          @default(MercadoPago)
+  descuento Int @default(0)
 }
 
 // Tabla intermedia entre productos y pedidos
@@ -128,6 +129,7 @@ model Venta {
   metodoPago  MetodoPago
   // Una venta puede tener varios productos 
   ProductosEnVenta ProductosEnVenta[]
+  descuento Int @default(0)
 }
 
 model ProductosEnVenta {

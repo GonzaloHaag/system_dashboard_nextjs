@@ -17,7 +17,7 @@ export const getPedidoWithId = async (pedidoId: number) => {
                         nombre: true,
                         direccion: true,
                         ciudad: true
-                    }
+                    },
                 },
                 productos: {
                     select: {

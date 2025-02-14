@@ -12,6 +12,7 @@ export const ButtonViewDetailsPedido = ({ pedido }: { pedido: Pedido }) => {
         TarjetaCredito: 'Tarjeta de crédito',
         TarjetaDebito: 'Tarjeta de débito'
     };
+    const subTotalOrderPrice = pedido.productos.reduce((acc,item) => acc + (item.product.precio * item.cantidad),0);
     const fechaEntregaLocal = new Date(pedido.fechaEntrega);
     fechaEntregaLocal.setMinutes(fechaEntregaLocal.getMinutes() + fechaEntregaLocal.getTimezoneOffset());
     return (
@@ -36,7 +37,7 @@ export const ButtonViewDetailsPedido = ({ pedido }: { pedido: Pedido }) => {
                             {
                                 pedido.productos.map((producto, index) => (
                                     <li key={index}>
-                                        {producto.product.titulo} x{producto.cantidad} - {FormatoMoneda(producto.product.precio)}
+                                        {producto.product.titulo} x{producto.cantidad} - {FormatoMoneda(producto.product.precio * producto.cantidad)}
                                     </li>
                                 ))
                             }
@@ -64,6 +65,14 @@ export const ButtonViewDetailsPedido = ({ pedido }: { pedido: Pedido }) => {
                     <div>
                         <h4 className="font-semibold">Método de pago:</h4>
                         <p>{statusLabelMetodoPago[pedido.metodoPago]}</p>
+                    </div>
+                    <div className="flex items-center gap-x-2">
+                        <h4 className="font-semibold">Descuento aplicado:</h4>
+                        <p>{pedido.descuento}%</p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold">Subtotal:</h4>
+                        <p>{FormatoMoneda(subTotalOrderPrice)}</p>
                     </div>
                     <div>
                         <h4 className="font-semibold">Total:</h4>
