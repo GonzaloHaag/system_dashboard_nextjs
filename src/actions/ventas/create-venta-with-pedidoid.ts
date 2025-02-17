@@ -10,9 +10,9 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
                 id: pedidoId
             },
             include: {
-                productos : {
-                    include : {
-                        product:true
+                productos: {
+                    include: {
+                        product: true
                     }
                 }
             }
@@ -52,7 +52,7 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
             }
         });
 
-       
+
 
         const totalGanancias = findPedidoWithId.productos.reduce((total, item) => {
             const product = productsDB.find(p => p.id === item.productId);
@@ -62,9 +62,9 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
         const discountAmount = (totalGanancias * findPedidoWithId.descuento) / 100;
         const gananciasWithDiscount = totalGanancias - discountAmount;
 
-       await prisma.venta.create({
+        await prisma.venta.create({
             data: {
-                id:findPedidoWithId.id,
+                id: findPedidoWithId.id,
                 usuarioId: findPedidoWithId.usuarioId,
                 clienteId: findPedidoWithId.clienteId,
                 //Productos hace referencia a la relacion de productosEnVenta
@@ -74,13 +74,26 @@ export const createVentaWithPedidoId = async (pedidoId: number) => {
                         cantidad: orderItem.cantidad
                     }))
                 },
-                fecha:new Date(findPedidoWithId.fechaEntrega),
-                metodoPago:findPedidoWithId.metodoPago,
+                fecha: new Date(findPedidoWithId.fechaEntrega),
+                metodoPago: findPedidoWithId.metodoPago,
                 precioTotal: findPedidoWithId.totalPrice,
-                descuento:findPedidoWithId.descuento,
-                ganancias:gananciasWithDiscount
+                descuento: findPedidoWithId.descuento,
+                ganancias: gananciasWithDiscount
             }
         });
+        // Descontar stock
+        await Promise.all(
+            findPedidoWithId.productos.map((orderItem) => prisma.product.update({
+                where: {
+                    id: orderItem.productId
+                },
+                data: {
+                    stock: {
+                        decrement: orderItem.cantidad
+                    }
+                }
+            }))
+        );
         revalidatePath('/pedidos');
         revalidatePath('/ventas');
         revalidatePath('/dashboard');

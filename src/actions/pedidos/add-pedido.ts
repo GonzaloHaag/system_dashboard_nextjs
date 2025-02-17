@@ -88,19 +88,7 @@ export const addPedido = async ({ userId, clienteId, ordersItems, estado, fechaE
             }
         });
 
-        // Descontar stock
-        await Promise.all(
-            ordersItems.map((orderItem) => prisma.product.update({
-                where: {
-                    id: orderItem.productId
-                },
-                data: {
-                    stock: {
-                        decrement: orderItem.quantity
-                    }
-                }
-            }))
-        );
+      
         if (newPedido.status === 'completed') {
             await createVentaWithPedidoId(newPedido.id);
         }

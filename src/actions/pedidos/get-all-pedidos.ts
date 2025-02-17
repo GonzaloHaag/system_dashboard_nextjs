@@ -30,7 +30,7 @@ export const getAllPedidos = async (userId: number, searchQuery: string) => {
                 }
             },
             orderBy : {
-                id:'asc'
+                id:'desc'
             }
         }) : await prisma.pedido.findMany({
             where: {

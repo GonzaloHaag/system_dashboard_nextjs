@@ -17,7 +17,7 @@ export { getAllProducts } from './productos/get-all-products';
 export { editProductWithId } from './productos/edit-product';
 export { findProductWithId } from './productos/find-product';
 export { deleteProductWithId } from './productos/delete-product';
-
+export { getFiltersProducts } from './productos/get-all-filters';
 export { addPedido } from './pedidos/add-pedido';
 export { editPedido } from './pedidos/edit-pedido';
 export { updatePedidoStatus } from './pedidos/update-status-pedido';

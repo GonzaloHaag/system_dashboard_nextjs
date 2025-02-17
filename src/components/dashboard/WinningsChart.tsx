@@ -4,7 +4,7 @@ import { FormatoMoneda } from "@/lib/FormatoMoneda";
 
 export const WinningsChart = ({ data }: { data: { name: string, Ganancias: number }[] }) => {
     return (
-        <div className="w-full h-[400px]">
+        <div className="w-full h-[400px] text-sm">
             {
                 data.length === 0 ? (
                     <div className="w-full h-full flex items-center justify-center">
@@ -15,8 +15,8 @@ export const WinningsChart = ({ data }: { data: { name: string, Ganancias: numbe
                         <BarChart width={150} height={40} data={data}>
                             <Bar dataKey="Ganancias" barSize={40} />
                             {/* <CartesianGrid strokeDasharray="1 1" /> */}
-                            < XAxis dataKey='name' />
-                            <YAxis />
+                            <XAxis dataKey='name' />
+                            <YAxis tickFormatter={FormatoMoneda} width={90} />
                             <Tooltip formatter={(value) => [`${FormatoMoneda(Number(value))}`, 'Total']} cursor={false} />
                         </BarChart>
                     </ResponsiveContainer >

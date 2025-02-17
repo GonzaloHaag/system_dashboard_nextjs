@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation";
 import { addPedido } from "@/actions";
 import { toast } from "sonner";
 import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Trash2Icon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
+import { Badge } from "../ui/badge";
+import { FormatoMoneda } from "@/lib/FormatoMoneda";
 
 interface Props {
     userId: number;
@@ -24,6 +26,7 @@ interface Props {
         titulo: string;
         stock: number;
         color: string;
+        precio: number;
     }[];
 }
 
@@ -39,7 +42,7 @@ type InputsPedido = {
 
 export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
     const router = useRouter();
-    const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsPedido>({
+    const { register, handleSubmit, formState: { isValid, isSubmitting }, control, watch } = useForm<InputsPedido>({
         defaultValues: {
             estado: 'pending',
             nota: '',
@@ -49,7 +52,8 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
     });
 
     const [orderItems, setOrderItems] = useState<{ productId: number, quantity: number }[]>([]);
-
+    const [totalPriceItems, setTotalPriceItems] = useState<number>(0);
+    const discount = watch('descuento');
     const buttonAddProduct = () => {
         if (orderItems.length === productos.length) {
             toast.error('No hay suficientes productos para agregar');
@@ -114,7 +118,7 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
             fechaEntrega: data.fechaEntrega,
             nota: data.nota,
             metodoPago: data.metodoPago,
-            descuento:data.descuento
+            descuento: data.descuento
         });
 
         if (!respuesta.ok) {
@@ -140,6 +144,26 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
             color: producto.color, // Agregar el color como dato extra
             stock: producto.stock
         }));
+
+        // Se recrea la funcion solo si productos cambia
+
+    const calcularTotalItems = useCallback((items: { productId: number; quantity: number }[]) => {
+        let total = 0;
+        items.forEach((item) => {
+            const product = productos.find((p) => p.id === item.productId);
+            if (product) {
+                total += product.precio * item.quantity;
+            }
+        });
+
+        return total;
+    }, [productos]); // Dependencia: productos
+
+    useEffect(() => {
+        const total = calcularTotalItems(orderItems);
+        const discountAmount = (total * discount) / 100;
+        setTotalPriceItems(total - discountAmount);
+    }, [orderItems, discount, calcularTotalItems])
 
     return (
         <form onSubmit={handleSubmit(formAddPedidoSubmit)} className="form_class_global">
@@ -273,6 +297,10 @@ export const FormAddPedido = ({ userId, clientes, productos }: Props) => {
                         )}
                     />
                 </div>
+            </div>
+            <div className="flex items-center gap-x-1">
+                <span>Total: </span>
+                <Badge>{FormatoMoneda(totalPriceItems)}</Badge>
             </div>
             <div className="flex flex-col items-start gap-y-2">
                 <label htmlFor="nota">Nota</label>

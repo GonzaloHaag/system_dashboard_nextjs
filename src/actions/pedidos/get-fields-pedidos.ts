@@ -26,7 +26,8 @@ export const getFieldsPedidos = async(userId:number) => {
                 id:true,
                 titulo:true,
                 stock:true,
-                color:true
+                color:true,
+                precio:true
             },
             orderBy : {
                 titulo:'asc'

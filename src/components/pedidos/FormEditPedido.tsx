@@ -7,11 +7,13 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { capitalizeFirstLetter } from "@/lib/capitalizeFirstLetter";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Trash2Icon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { editPedido } from "@/actions";
 import { MetodoPago, StatusPedido } from "@/interfaces/pedido";
+import { FormatoMoneda } from "@/lib/FormatoMoneda";
+import { Badge } from "../ui/badge";
 
 interface Props {
     clientes: {
@@ -23,6 +25,7 @@ interface Props {
         titulo: string;
         stock: number;
         color: string;
+        precio: number;
     }[];
     pedidoExistente: {
         productos: {
@@ -53,7 +56,7 @@ interface Props {
         createdAt: Date;
         totalPrice: number;
         totalProducts: number;
-        descuento:number;
+        descuento: number;
     }
 }
 type InputsPedido = {
@@ -69,7 +72,7 @@ type InputsPedido = {
 export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) => {
     const router = useRouter();
     const fechaEntrega = new Date(pedidoExistente.fechaEntrega).toISOString().split("T")[0];
-    const { register, handleSubmit, formState: { isValid, isSubmitting }, control } = useForm<InputsPedido>({
+    const { register, handleSubmit, formState: { isValid, isSubmitting }, control, watch } = useForm<InputsPedido>({
         defaultValues: {
             clienteType: { label: pedidoExistente.Cliente.nombre, value: pedidoExistente.Cliente.id },
             fechaEntrega: fechaEntrega,
@@ -87,6 +90,8 @@ export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) 
     }));
 
     const [orderItems, setOrderItems] = useState<{ productId: number, quantity: number }[]>(initialOrderItems);
+    const [totalPriceItems, setTotalPriceItems] = useState<number>(0);
+    const discount = watch('descuento');
 
     const buttonAddProduct = () => {
         if (orderItems.length === productos.length) {
@@ -178,7 +183,26 @@ export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) 
         value: product.id,
         color: product.product.color, // Agregar el color como dato extra
         stock: product.product.stock
-    }))
+    }));
+
+    // Se recrea la funcion solo si productos cambia
+    const calcularTotalItems = useCallback((items: { productId: number; quantity: number }[]) => {
+        let total = 0;
+        items.forEach((item) => {
+            const product = productos.find((p) => p.id === item.productId);
+            if (product) {
+                total += product.precio * item.quantity;
+            }
+        });
+
+        return total;
+    }, [productos]); // Dependencia: productos
+
+    useEffect(() => {
+        const total = calcularTotalItems(orderItems);
+        const discountAmount = (total * discount) / 100;
+        setTotalPriceItems(total - discountAmount);
+    }, [orderItems, discount, calcularTotalItems])
 
     return (
         <form onSubmit={handleSubmit(formEditPedidoSubmit)} className="form_class_global">
@@ -316,6 +340,10 @@ export const FormEditPedido = ({ clientes, productos, pedidoExistente }: Props) 
                         )}
                     />
                 </div>
+            </div>
+            <div className="flex items-center gap-x-1">
+                <span>Total: </span>
+                <Badge>{FormatoMoneda(totalPriceItems)}</Badge>
             </div>
 
             <div className="flex flex-col items-start gap-y-2">

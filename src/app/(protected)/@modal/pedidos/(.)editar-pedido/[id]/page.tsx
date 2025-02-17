@@ -35,7 +35,7 @@ export default async function EditarPedidoModalPage({ params }: { params: Promis
     const { pedido } = responsePedido;
     return (
         <Dialog open={true}>
-            <DialogContent>
+            <DialogContent className="w-full sm:min-w-[620px]">
                 <DialogHeader>
                     <DialogTitle>Editar pedido</DialogTitle>
                     <DialogDescription>

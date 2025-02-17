@@ -31,6 +31,7 @@ export { TableProducts } from './productos/TableProducts';
 export { SkeletonTableProducts } from './productos/SkeletonTableProducts';
 export { FormEditProduct } from './productos/FormEditProduct';
 export { ButtonDeleteProduct } from './productos/ButtonDeleteProduct';
+export { FilterCategory } from './productos/FilterCategory';
 /** Pedidos */
 export { FormAddPedido } from './pedidos/FormAddPedido';
 export { FormEditPedido } from './pedidos/FormEditPedido';

@@ -97,20 +97,6 @@ export const editPedido = async ({ pedidoId, clienteId, ordersItems, estado, fec
                 totalProducts: totalProducts
             }
         });
-
-        // Descontar stock
-        await Promise.all(
-            ordersItems.map((orderItem) => prisma.product.update({
-                where: {
-                    id: orderItem.productId
-                },
-                data: {
-                    stock: {
-                        decrement: orderItem.quantity
-                    }
-                }
-            }))
-        );
         if(pedidoUpdate.status === 'completed') {
             await createVentaWithPedidoId(pedidoUpdate.id);
         }

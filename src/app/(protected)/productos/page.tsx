@@ -13,6 +13,7 @@ export default async function ProductosPage(props:{
   searchParams?:Promise<{
     search?:string;
     page?:string;
+    category?:string;
   }>
 }) {
 
