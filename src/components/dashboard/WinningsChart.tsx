@@ -16,7 +16,7 @@ export const WinningsChart = ({ data }: { data: { name: string, Ganancias: numbe
                             <Bar dataKey="Ganancias" barSize={40} />
                             {/* <CartesianGrid strokeDasharray="1 1" /> */}
                             <XAxis dataKey='name' />
-                            <YAxis tickFormatter={FormatoMoneda} width={90} />
+                            <YAxis tickFormatter={FormatoMoneda} width={100} />
                             <Tooltip formatter={(value) => [`${FormatoMoneda(Number(value))}`, 'Total']} cursor={false} />
                         </BarChart>
                     </ResponsiveContainer >
