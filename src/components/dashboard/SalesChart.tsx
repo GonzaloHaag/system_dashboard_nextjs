@@ -15,7 +15,7 @@ export const SalesChart = ({ data }: { data: { name: string, ventas: number }[] 
                         <AreaChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
-                            <YAxis tickFormatter={FormatoMoneda} width={80} />
+                            <YAxis tickFormatter={FormatoMoneda} width={100} />
                             <Tooltip formatter={(value) => [`${FormatoMoneda(Number(value))}`, 'Total']} cursor={false} />
                             <Area type="monotone" dataKey="ventas" stroke="#8884d8" fill="#1d4ed8" />
                         </AreaChart>
