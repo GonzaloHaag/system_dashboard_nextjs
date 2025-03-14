@@ -5,55 +5,68 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupConte
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavUser } from "./nav-user";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { Skeleton } from "./ui/skeleton";
 
 const items = [
     {
-        title:'Dashboard',
-        path:'/dashboard',
+        title: 'Dashboard',
+        path: '/dashboard',
         icon: LayoutDashboardIcon
     },
     {
-        title:'Clientes',
-        path:'/clientes',
+        title: 'Clientes',
+        path: '/clientes',
         icon: UsersIcon
     },
     {
-        title:'Categorías',
-        path:'/categorias',
+        title: 'Categorías',
+        path: '/categorias',
         icon: UsersIcon
     },
     {
-        title:'Productos',
-        path:'/productos',
+        title: 'Productos',
+        path: '/productos',
         icon: LayoutPanelTopIcon
     },
     {
-        title:'Pedidos',
-        path:'/pedidos',
+        title: 'Pedidos',
+        path: '/pedidos',
         icon: ClipboardListIcon
     },
     {
-        title:'Ventas',
-        path:'/ventas',
+        title: 'Ventas',
+        path: '/ventas',
         icon: ReceiptIcon
     },
 ]
 export function AppSideBar() {
-
+    const { data, status } = useSession();
     const pathname = usePathname();
-      const data = {
-        user: {
-          name: "Sofia peralta",
-          email: "elpochomates13@gmail.com",
-          avatar: "/avatars/shadcn.jpg",
-        },
-      }
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <div className="flex items-center gap-x-2">
-                    <Image src={'/images/logo_pocho.webp'} alt="logo pocho mates" width={40} height={40} className="aspect-square" />
+                    {
+                    status === "loading" ? (
+                        <Skeleton className="w-[40px] h-[40px] rounded-full" />
+                    ) : data?.user.logoSistema && data?.user.nombreSistema ? (
+                        <Image
+                            src={data.user.logoSistema}
+                            priority
+                            alt={`Logo ${data.user.nombreSistema}`}
+                            width={40}
+                            height={40}
+                            className="w-[40px] h-[40px]"
+                        />
+                    ) : (
+                        <span className="text-xl">
+                            {data?.user.nombre?.split(" ").map((word) => word.charAt(0).toUpperCase()).join("")}
+                        </span>
+                    )
+                    }
+
                 </div>
             </SidebarHeader>
 
@@ -64,24 +77,24 @@ export function AppSideBar() {
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                        {
-                            items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <Link href={item.path} title={item.title} className={`transition-colors duration-200 ${pathname === item.path ? 'bg-slate-900 text-slate-100 hover:bg-slate-800 hover:text-slate-100' : 'bg-inherit'}`}>
-                                          <item.icon />
-                                          <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))
-                        }
+                            {
+                                items.map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild>
+                                            <Link href={item.path} title={item.title} className={`transition-colors duration-200 ${pathname === item.path ? 'bg-slate-900 text-slate-100 hover:bg-slate-800 hover:text-slate-100' : 'bg-inherit'}`}>
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))
+                            }
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-               <NavUser user={ data.user } />
+                <NavUser user={data?.user} status={status} />
             </SidebarFooter>
         </Sidebar>
     )
