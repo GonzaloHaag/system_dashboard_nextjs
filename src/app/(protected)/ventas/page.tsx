@@ -25,6 +25,8 @@ export default async function VentasPage(props: {
   const searchParams = await props.searchParams;
   const searchQuery = searchParams?.search ?? '';
   const page = searchParams?.page ? parseInt(searchParams.page) : 1;
+
+  console.log('CHange dev');
   return (
     <section className="w-full flex flex-col gap-y-6">
       <div className='w-full flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between sm:h-10'>
